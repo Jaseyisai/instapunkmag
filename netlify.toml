@@ -7,3 +7,8 @@
   from = "/api/find-stores"
   to = "/.netlify/functions/find-stores"
   status = 200
+
+[[redirects]]
+  from = "/api/generate-article"
+  to = "/.netlify/functions/generate-article"
+  status = 200
