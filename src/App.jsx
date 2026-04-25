@@ -228,16 +228,40 @@ const GALLERY_PROMPTS = [
 
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
-  const [loaded, setLoaded] = useState(false);
+  const [imgSrc, setImgSrc] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  // Add a random seed so every page load gets a fresh unique image
   const seed = useRef(Math.floor(Math.random() * 999999));
-  const encoded = encodeURIComponent(prompt);
-  const url = `https://image.pollinations.ai/prompt/${encoded}?width=800&height=600&seed=${seed.current}&nologo=true`;
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchImage() {
+      try {
+        const response = await fetch("/api/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, seed: seed.current }),
+        });
+        if (!response.ok) throw new Error("Failed");
+        const blob = await response.blob();
+        if (!cancelled) {
+          setImgSrc(URL.createObjectURL(blob));
+          setLoading(false);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    }
+    fetchImage();
+    return () => { cancelled = true; };
+  }, [prompt]);
 
   return (
     <div className="gallery-item" style={span ? { gridColumn: `span ${span}` } : {}}>
-      {!loaded && !error && (
+      {loading && (
         <div className="gallery-placeholder">
           <div className="gallery-spinner" />
           <span>Generating...</span>
@@ -248,14 +272,12 @@ function GalleryImage({ prompt, alt, span }) {
           <span style={{ color: "var(--grey)", fontSize: "0.75rem" }}>Image unavailable</span>
         </div>
       )}
-      <img
-        src={url}
-        alt={alt}
-        onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
-        style={{ display: loaded ? "block" : "none" }}
-      />
-      {loaded && <div className="gallery-overlay" />}
+      {imgSrc && (
+        <>
+          <img src={imgSrc} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <div className="gallery-overlay" />
+        </>
+      )}
     </div>
   );
 }
