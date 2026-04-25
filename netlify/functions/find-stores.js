@@ -1,18 +1,20 @@
-export default async (request) => {
+exports.handler = async function (event, context) {
   // Only allow POST requests
-  if (request.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
   }
 
   try {
-    const body = await request.json();
-    const { location, storeType } = body;
+    const { location, storeType } = JSON.parse(event.body);
 
     if (!location) {
-      return new Response(JSON.stringify({ error: "Location is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Location is required" }),
+      };
     }
 
     const typeLabel =
@@ -40,30 +42,35 @@ Format as JSON array with keys: name, type, reason, items. Return ONLY the JSON 
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }],
       }),
     });
 
     const data = await response.json();
+
+    if (!data.content || !data.content[0]) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "No response from AI. Please try again." }),
+      };
+    }
+
     const text = data.content.map((i) => i.text || "").join("");
     const clean = text.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(clean);
 
-    return new Response(JSON.stringify(parsed), {
-      status: 200,
+    return {
+      statusCode: 200,
       headers: { "Content-Type": "application/json" },
-    });
+      body: JSON.stringify(parsed),
+    };
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Something went wrong. Please try again." }), {
-      status: 500,
+    return {
+      statusCode: 500,
       headers: { "Content-Type": "application/json" },
-    });
+      body: JSON.stringify({ error: "Something went wrong: " + err.message }),
+    };
   }
 };
-
-export const config = {
-  path: "/api/find-stores",
-};
-
