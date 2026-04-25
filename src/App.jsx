@@ -513,7 +513,21 @@ function MusicReader({ track, onClose }) {
               <div style={{marginTop:"1.5rem", padding:"1rem", background:"rgba(204,0,0,0.07)", borderLeft:"3px solid var(--red)"}}>
                 <div className="diy-tools-label" style={{marginBottom:"0.5rem"}}>// LISTEN TO</div>
                 {content.listenTo.map((item, i) => (
-                  <div key={i} style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.78rem", color:"#ccc", marginBottom:"0.3rem"}}>▶ {item}</div>
+                  <a
+                    key={i}
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(item)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display:"block", fontFamily:"'Share Tech Mono', monospace",
+                      fontSize:"0.78rem", color:"var(--red)", marginBottom:"0.5rem",
+                      textDecoration:"none", transition:"color 0.15s",
+                    }}
+                    onMouseOver={e => e.target.style.color = "#ff4444"}
+                    onMouseOut={e => e.target.style.color = "var(--red)"}
+                  >
+                    ▶ {item}
+                  </a>
                 ))}
               </div>
             )}
