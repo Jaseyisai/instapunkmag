@@ -424,6 +424,12 @@ function ArticleReader({ article, onClose }) {
                 {content.tags.map((tag, i) => <span key={i} className="ar-tag">#{tag}</span>)}
               </div>
             )}
+            <div className="ar-kofi">
+              <p className="ar-kofi-text">Enjoyed this article? Help keep Insta Punk Mag alive and independent.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+                ☕ BUY US A COFFEE ON KO-FI
+              </a>
+            </div>
           </div>
         )}
       </div>
@@ -1139,6 +1145,21 @@ export default function PunkHub() {
         .ar-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--mid); }
         .ar-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey); background: var(--dark); border: 1px solid var(--mid); padding: 0.3rem 0.7rem; letter-spacing: 0.05em; }
 
+        .kofi-wrap { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--mid); }
+        .kofi-label { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey); letter-spacing: 0.15em; margin-bottom: 1rem; }
+        .kofi-btn {
+          display: inline-block;
+          background: #ff5e5b; color: #fff;
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 0.85rem; letter-spacing: 0.1em;
+          padding: 0.8rem 2rem; text-decoration: none;
+          border: none; cursor: pointer;
+          transition: all 0.15s;
+        }
+        .kofi-btn:hover { background: #ff3a37; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--yellow); }
+        .ar-kofi { margin-top: 2.5rem; padding: 1.5rem; background: rgba(255,94,91,0.07); border: 1px solid rgba(255,94,91,0.25); text-align: center; }
+        .ar-kofi-text { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); letter-spacing: 0.08em; margin-bottom: 1rem; }
+
         /* === FOOTER === */
         .punk-footer {
           background: var(--off-black);
@@ -1567,6 +1588,12 @@ export default function PunkHub() {
           THE COMPLETE PUNK CULTURE HUB<br />
           FASHION · MUSIC · HISTORY · FAITH · COMMUNITY<br /><br />
           <span style={{color:"#555"}}>Built with noise, static, and something to say. // Not for sale. Never for sale.</span>
+        </div>
+        <div className="kofi-wrap">
+          <p className="kofi-label">// LIKE WHAT WE'RE DOING? KEEP THE NOISE ALIVE //</p>
+          <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+            ☕ BUY US A COFFEE ON KO-FI
+          </a>
         </div>
       </footer>
     </div>
