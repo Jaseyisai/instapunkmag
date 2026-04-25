@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/find-stores"
+  to = "/.netlify/functions/find-stores"
+  status = 200
