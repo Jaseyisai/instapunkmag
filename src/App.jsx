@@ -466,10 +466,10 @@ export default function PunkHub() {
         .site-logo {
           font-family: 'Permanent Marker', cursive;
           font-size: clamp(1.4rem, 4vw, 2.2rem);
-          color: var(--white);
-          letter-spacing: 2px;
+          color: var(--red);
+          letter-spacing: -1px;
           padding: 0.75rem 0;
-          text-shadow: 3px 3px 0 var(--red), 5px 5px 0 rgba(204,0,0,0.3);
+          text-shadow: 3px 3px 0 var(--yellow), 6px 6px 0 rgba(204,0,0,0.2);
           white-space: nowrap;
           cursor: pointer;
         }
@@ -996,8 +996,8 @@ export default function PunkHub() {
       {/* HEADER */}
       <header className="punk-header">
         <div className={`site-logo ${glitching ? "glitch" : ""}`} onClick={() => scrollToSection("HOME")}>
-          INSTA <em style={{color:"#ff2020", WebkitTextStroke:"0px", textShadow:"0 0 20px rgba(255,32,32,0.6)"}}>PUNK</em> MAG
-          <span className="sub">// INSTA PUNK MAG //</span>
+          RAWDIRT<em style={{color:"#f5c400"}}>.</em>PUNK
+          <span className="sub">// THE COMPLETE CULTURE HUB //</span>
         </div>
         <nav className={`punk-nav ${menuOpen ? "open" : ""}`}>
           {SECTIONS.map(s => (
@@ -1015,7 +1015,7 @@ export default function PunkHub() {
           <section className="hero">
             <div className="diagonal-tape" />
             <div className="hero-anarchy">Ⓐ</div>
-            <h1 className="hero-title">One Sound.<br /><em>No Rules.</em><br />All Culture.</h1>
+            <h1 className="hero-title">No Gods.<br /><em>No Masters.</em><br />All Culture.</h1>
             <p className="hero-sub">// FASHION · MUSIC · HISTORY · COMMUNITY · FAITH //</p>
             <div className="hero-ctas">
               <button className="cta-btn cta-primary" onClick={() => scrollToSection("HISTORY")}>EXPLORE HISTORY</button>
@@ -1026,7 +1026,7 @@ export default function PunkHub() {
           <div className="section-wrap">
             <div className="manifesto">
               <p className="manifesto-text">Punk is not just music. It's a way of thinking. A way of refusing. A way of making something out of nothing and saying it louder than anyone who told you to be quiet.</p>
-              <p className="manifesto-attr">— INSTA PUNK MAG MANIFESTO</p>
+              <p className="manifesto-attr">— RAWDIRT.PUNK MANIFESTO</p>
             </div>
 
             <div className="punk-divider"><span>// WHAT'S INSIDE //</span></div>
@@ -1376,7 +1376,7 @@ export default function PunkHub() {
 
       {/* FOOTER */}
       <footer className="punk-footer">
-        <div className="footer-logo">INSTA <span style={{color:"#ff2020", textShadow:"0 0 16px rgba(255,32,32,0.5)"}}>PUNK</span> MAG</div>
+        <div className="footer-logo">RAWDIRT.PUNK</div>
         <div className="footer-icons">
           {["🎸", "✊", "Ⓐ", "📋", "✝️"].map((e, i) => <span key={i}>{e}</span>)}
         </div>
