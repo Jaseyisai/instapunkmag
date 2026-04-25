@@ -317,10 +317,16 @@ function StoreFinder() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ location, storeType }),
       });
-      const parsed = await response.json();
-      setResults(parsed);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setResults(data);
+      } else if (data && data.error) {
+        setResults([{ name: "Search Error", type: "Error", reason: data.error, items: "" }]);
+      } else {
+        setResults([{ name: "No Results", type: "Info", reason: "No stores found for that location. Try a nearby city name instead.", items: "" }]);
+      }
     } catch (e) {
-      setResults([{ name: "Search Error", type: "Error", reason: "Could not fetch results. Try again.", items: "" }]);
+      setResults([{ name: "Search Error", type: "Error", reason: "Could not connect to the store finder. Please try again in a moment.", items: "" }]);
     }
     setLoading(false);
   }
