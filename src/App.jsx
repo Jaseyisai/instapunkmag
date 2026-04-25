@@ -300,6 +300,81 @@ function DIYWorkshop() {
   );
 }
 
+// Article Reader Component
+function ArticleReader({ article, onClose }) {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchArticle() {
+      try {
+        const response = await fetch("/api/generate-article", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: article.title, category: article.category, excerpt: article.excerpt }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setContent(data);
+      } catch (e) {
+        setError("Could not load article. Please try again.");
+      }
+      setLoading(false);
+    }
+    fetchArticle();
+  }, [article]);
+
+  return (
+    <div className="article-reader-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="article-reader">
+        <button className="article-reader-close" onClick={onClose}>✕ CLOSE</button>
+
+        {loading && (
+          <div className="article-reader-loading">
+            <div className="loading-bars">
+              {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />)}
+            </div>
+            <p>Generating article...</p>
+          </div>
+        )}
+
+        {error && <div className="article-reader-error">{error}</div>}
+
+        {content && (
+          <div className="article-reader-content">
+            <div className="ar-category">{article.category}</div>
+            <h1 className="ar-headline">{content.headline || article.title}</h1>
+            <p className="ar-standfirst">{content.standfirst}</p>
+            <div className="ar-meta">
+              <span>{article.emoji}</span>
+              <span>{article.readTime}</span>
+              <span>Insta Punk Mag</span>
+            </div>
+            <div className="ar-divider" />
+            {content.body && content.body.split("\n\n").map((para, i) => {
+              if (i === 2 && content.pullquote) {
+                return (
+                  <div key={i}>
+                    <blockquote className="ar-pullquote">{content.pullquote}</blockquote>
+                    <p className="ar-para">{para}</p>
+                  </div>
+                );
+              }
+              return <p key={i} className="ar-para">{para}</p>;
+            })}
+            {content.tags && (
+              <div className="ar-tags">
+                {content.tags.map((tag, i) => <span key={i} className="ar-tag">#{tag}</span>)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Store Finder Component
 function StoreFinder() {
   const [location, setLocation] = useState("");
@@ -325,10 +400,9 @@ function StoreFinder() {
       } else {
         setResults([{ name: "No Results", type: "Info", reason: "No stores found for that location. Try a nearby city name instead.", items: "" }]);
       }
-} catch (e) {
-  alert("Error: " + e.message);
-  setResults([{ name: "Search Error", type: "Error", reason: e.message, items: "" }]);
-}
+    } catch (e) {
+      setResults([{ name: "Search Error", type: "Error", reason: "Could not connect to the store finder. Please try again in a moment.", items: "" }]);
+    }
     setLoading(false);
   }
 
@@ -391,6 +465,7 @@ export default function PunkHub() {
   const [activeSection, setActiveSection] = useState("HOME");
   const [menuOpen, setMenuOpen] = useState(false);
   const [glitching, setGlitching] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -952,6 +1027,43 @@ export default function PunkHub() {
         .diy-tool-name { font-family: 'Special Elite', cursive; font-size: 1rem; margin-bottom: 0.3rem; }
         .diy-tool-use { font-size: 0.82rem; color: #aaa; line-height: 1.55; font-weight: 300; }
 
+        /* === ARTICLE READER === */
+        .article-reader-overlay {
+          position: fixed; inset: 0; z-index: 500;
+          background: rgba(0,0,0,0.92);
+          display: flex; align-items: flex-start; justify-content: center;
+          padding: 2rem 1rem; overflow-y: auto;
+        }
+        .article-reader {
+          background: var(--off-black);
+          border: 1px solid var(--mid);
+          border-top: 4px solid var(--red);
+          max-width: 720px; width: 100%;
+          padding: 2rem; position: relative;
+          margin: auto;
+        }
+        .article-reader-close {
+          background: none; border: 1px solid var(--mid);
+          color: var(--grey); padding: 0.4rem 1rem;
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 0.7rem; letter-spacing: 0.1em;
+          cursor: pointer; margin-bottom: 2rem;
+          display: block; transition: all 0.15s;
+        }
+        .article-reader-close:hover { border-color: var(--red); color: var(--white); }
+        .article-reader-loading { text-align: center; padding: 4rem 0; }
+        .article-reader-loading p { font-family: 'Share Tech Mono', monospace; color: var(--grey); font-size: 0.85rem; margin-top: 1rem; letter-spacing: 0.1em; }
+        .article-reader-error { color: var(--red); font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 2rem; text-align: center; }
+        .ar-category { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--yellow); text-transform: uppercase; margin-bottom: 0.75rem; }
+        .ar-headline { font-family: 'Special Elite', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 1rem; }
+        .ar-standfirst { font-size: 1.1rem; color: #ddd; line-height: 1.7; font-style: italic; border-left: 3px solid var(--red); padding-left: 1rem; margin-bottom: 1rem; }
+        .ar-meta { display: flex; gap: 1.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey); letter-spacing: 0.08em; margin-bottom: 1.5rem; }
+        .ar-divider { height: 2px; background: linear-gradient(90deg, var(--red), transparent); margin-bottom: 1.5rem; }
+        .ar-para { font-size: 1rem; line-height: 1.85; color: #ccc; font-weight: 300; margin-bottom: 1.2rem; }
+        .ar-pullquote { border-left: 4px solid var(--red); padding: 1rem 1.5rem; margin: 1.5rem 0; font-family: 'Special Elite', cursive; font-size: 1.25rem; color: var(--white); line-height: 1.5; background: rgba(204,0,0,0.07); }
+        .ar-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--mid); }
+        .ar-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey); background: var(--dark); border: 1px solid var(--mid); padding: 0.3rem 0.7rem; letter-spacing: 0.05em; }
+
         /* === FOOTER === */
         .punk-footer {
           background: var(--off-black);
@@ -1228,17 +1340,20 @@ export default function PunkHub() {
       {/* ARTICLES */}
       {activeSection === "ARTICLES" && (
         <div className="section-wrap">
+          {selectedArticle && (
+            <ArticleReader article={selectedArticle} onClose={() => setSelectedArticle(null)} />
+          )}
           <h2 className="section-title">Articles & Stories</h2>
           <p className="section-sub">// CULTURE · HISTORY · DIY · POLITICS · COMMUNITY //</p>
 
           <div className="article-grid">
             {ARTICLES.map((a, i) => (
-              <div key={i} className="article-card">
+              <div key={i} className="article-card" onClick={() => setSelectedArticle(a)} style={{cursor:"pointer"}}>
                 <span className="article-emoji">{a.emoji}</span>
                 <div className="article-category">{a.category}</div>
                 <h3 className="article-title">{a.title}</h3>
                 <p className="article-excerpt">{a.excerpt}</p>
-                <span className="article-read-time">⏱ {a.readTime}</span>
+                <span className="article-read-time">⏱ {a.readTime} &nbsp;·&nbsp; <span style={{color:"var(--red)"}}>READ NOW →</span></span>
               </div>
             ))}
           </div>
