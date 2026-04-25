@@ -224,6 +224,15 @@ const CHRISTIAN_PUNK_BANDS = [
   { name: "Project 86", genre: "Christian Hardcore / Post-Hardcore", note: "Aggressive, literary, and spiritually complex. A thinking-person's hardcore." },
 ];
 
+const NEW_CHRISTIAN_MUSIC_CARDS = [
+  { title: "Underøath", genre: "Post-Hardcore / Metalcore", desc: "Tampa's most important band returned harder and heavier than ever. Their faith journey and musical evolution is one of the most compelling stories in hardcore.", emoji: "✝️" },
+  { title: "Norma Jean", genre: "Metalcore / Hardcore", desc: "Still one of the heaviest bands on the planet. Bless the Martyr and Kiss the Child changed Christian hardcore forever and they've never stopped pushing.", emoji: "🔥" },
+  { title: "Five Iron Frenzy", genre: "Ska Punk", desc: "Denver's beloved ska-punk legends reunited and proved they never lost a step. Horns blazing, faith intact, and funnier than ever.", emoji: "🎺" },
+  { title: "Switchfoot", genre: "Alternative / Post-Grunge", desc: "Three decades in and still writing anthems. Switchfoot's ability to write songs about faith that resonate with everyone is genuinely remarkable.", emoji: "🌊" },
+  { title: "MxPx", genre: "Pop Punk", desc: "Bremerton's finest have been playing Christian pop-punk since 1992 and show no signs of slowing down. Melodic, joyful, and relentlessly positive.", emoji: "⚡" },
+  { title: "The Devil Wears Prada", genre: "Metalcore / Deathcore", desc: "Ohio metalcore titans whose blend of brutal breakdowns and Christian themes helped define an era. Their comeback material is some of their best work.", emoji: "💥" },
+];
+
 const GALLERY_PROMPTS = [
   { prompt: "punk rock concert crowd moshing stage lights dramatic dark atmosphere", alt: "Punk show" },
   { prompt: "studded leather punk jacket spikes patches close up detail photography", alt: "Studded leather jacket" },
@@ -549,6 +558,192 @@ function MusicReader({ track, onClose }) {
   );
 }
 
+// Christian Show Finder Component
+function ChristianShowFinder() {
+  const [location, setLocation] = useState("");
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function findShows() {
+    if (!location.trim()) return;
+    setLoading(true);
+    setResults(null);
+    try {
+      const response = await fetch("/api/find-christian-shows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location }),
+      });
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setResults(data);
+      } else {
+        setResults([{ venue: "Search Error", band: "", genre: "", vibe: data.error || "Could not find shows. Try a nearby city.", tip: "" }]);
+      }
+    } catch (e) {
+      setResults([{ venue: "Search Error", band: "", genre: "", vibe: "Could not connect. Please try again.", tip: "" }]);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="store-finder">
+      <div className="finder-controls">
+        <input
+          type="text"
+          placeholder="Enter your city or zip code..."
+          value={location}
+          onChange={e => setLocation(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && findShows()}
+          className="finder-input"
+          style={{borderColor: "var(--christian-purple)"}}
+        />
+        <button onClick={findShows} className="finder-btn" disabled={loading}
+          style={{background: "var(--christian-purple)"}}>
+          {loading ? "SEARCHING..." : "FIND SHOWS"}
+        </button>
+      </div>
+
+      {loading && (
+        <div className="finder-loading">
+          <div className="loading-bars">
+            {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s`, background: "var(--christian-gold)" }} />)}
+          </div>
+          <p>Searching the faithful underground...</p>
+        </div>
+      )}
+
+      {results && (
+        <div className="show-results">
+          {results.map((show, i) => (
+            <div key={i} className="show-card" style={{borderLeftColor: "var(--christian-gold)"}}>
+              <div className="show-header">
+                <div>
+                  <div className="show-band" style={{color: "var(--christian-gold)"}}>{show.band}</div>
+                  <div className="show-venue">📍 {show.venue}</div>
+                </div>
+                <span className="store-type-badge" style={{color: "var(--christian-gold)"}}>{show.genre}</span>
+              </div>
+              <p className="store-reason">{show.vibe}</p>
+              {show.tip && <p className="show-tip" style={{color: "var(--christian-gold)"}}>💡 {show.tip}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!results && !loading && (
+        <div className="finder-placeholder">
+          <div className="anarchy-symbol" style={{color: "var(--christian-gold)"}}>✝️</div>
+          <p>Enter your location to find Christian punk and hardcore shows near you</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Christian Music Feature Reader Component
+function ChristianMusicReader({ track, onClose }) {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchFeature() {
+      try {
+        const response = await fetch("/api/generate-christian-music", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: track.title, genre: track.genre, desc: track.desc }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setContent(data);
+      } catch (e) {
+        setError("Could not load feature. Please try again.");
+      }
+      setLoading(false);
+    }
+    fetchFeature();
+  }, [track]);
+
+  return (
+    <div className="article-reader-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="article-reader" style={{borderTopColor: "var(--christian-gold)"}}>
+        <button className="article-reader-close" onClick={onClose}>✕ CLOSE</button>
+
+        {loading && (
+          <div className="article-reader-loading">
+            <div className="loading-bars">
+              {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s`, background: "var(--christian-gold)" }} />)}
+            </div>
+            <p>Generating music feature...</p>
+          </div>
+        )}
+
+        {error && <div className="article-reader-error">{error}</div>}
+
+        {content && (
+          <div className="article-reader-content">
+            <div className="ar-category" style={{color: "var(--christian-gold)"}}>{track.genre}</div>
+            <h1 className="ar-headline">{content.headline || track.title}</h1>
+            <p className="ar-standfirst">{content.standfirst}</p>
+            <div className="ar-meta">
+              <span>{track.emoji}</span>
+              <span>Music Feature</span>
+              <span>Insta Punk Mag</span>
+            </div>
+            <div className="ar-divider" style={{background: "linear-gradient(90deg, var(--christian-gold), transparent)"}} />
+            {content.body && content.body.split("\n\n").map((para, i) => {
+              if (i === 2 && content.pullquote) {
+                return (
+                  <div key={i}>
+                    <blockquote className="ar-pullquote" style={{borderLeftColor: "var(--christian-gold)", background: "rgba(201,168,76,0.07)"}}>{content.pullquote}</blockquote>
+                    <p className="ar-para">{para}</p>
+                  </div>
+                );
+              }
+              return <p key={i} className="ar-para">{para}</p>;
+            })}
+            {content.listenTo && (
+              <div style={{marginTop:"1.5rem", padding:"1rem", background:"rgba(201,168,76,0.07)", borderLeft:"3px solid var(--christian-gold)"}}>
+                <div className="diy-tools-label" style={{marginBottom:"0.5rem", color: "var(--christian-gold)"}}>// LISTEN TO</div>
+                {content.listenTo.map((item, i) => (
+                  <a
+                    key={i}
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(item)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display:"block", fontFamily:"'Share Tech Mono', monospace",
+                      fontSize:"0.78rem", color:"var(--christian-gold)", marginBottom:"0.5rem",
+                      textDecoration:"none", transition:"color 0.15s",
+                    }}
+                    onMouseOver={e => e.target.style.color = "#e8c96d"}
+                    onMouseOut={e => e.target.style.color = "var(--christian-gold)"}
+                  >
+                    ▶ {item}
+                  </a>
+                ))}
+              </div>
+            )}
+            {content.tags && (
+              <div className="ar-tags">
+                {content.tags.map((tag, i) => <span key={i} className="ar-tag"  style={{borderColor: "var(--christian-purple)", color: "var(--christian-gold)"}}>#{tag}</span>)}
+              </div>
+            )}
+            <div className="ar-kofi">
+              <p className="ar-kofi-text">Enjoyed this feature? Help keep Insta Punk Mag alive and independent.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+                ☕ BUY US A COFFEE ON KO-FI
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Article Reader Component
 function ArticleReader({ article, onClose }) {
   const [content, setContent] = useState(null);
@@ -722,6 +917,7 @@ export default function PunkHub() {
   const [glitching, setGlitching] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedTrack, setSelectedTrack] = useState(null);
+  const [selectedChristianTrack, setSelectedChristianTrack] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1713,13 +1909,33 @@ export default function PunkHub() {
       {/* CHRISTIAN PUNK */}
       {activeSection === "CHRISTIAN PUNK" && (
         <div className="section-wrap">
+          {selectedChristianTrack && (
+            <ChristianMusicReader track={selectedChristianTrack} onClose={() => setSelectedChristianTrack(null)} />
+          )}
           <h2 className="section-title" style={{color: "var(--christian-gold)"}}>Christian Punk</h2>
           <p className="section-sub" style={{color:"#a87fd0"}}>// FAITH · FURY · COMMUNITY · GRACE IN THE PIT //</p>
 
-          <div className="christian-section">
+          <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// NEW & NOW — CLICK TO READ FULL FEATURE //</span></div>
+          <div className="new-music-grid">
+            {NEW_CHRISTIAN_MUSIC_CARDS.map((track, i) => (
+              <div key={i} className="new-music-card"
+                style={{borderTopColor:"var(--christian-gold)"}}
+                onClick={() => setSelectedChristianTrack(track)}>
+                <span className="new-music-emoji">{track.emoji}</span>
+                <div className="new-music-genre" style={{color:"var(--christian-gold)"}}>{track.genre}</div>
+                <div className="new-music-title">{track.title}</div>
+                <div className="new-music-desc">{track.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// FIND CHRISTIAN PUNK SHOWS NEAR YOU //</span></div>
+          <ChristianShowFinder />
+
+          <div className="christian-section" style={{marginTop:"2rem"}}>
             <p className="christian-intro">
-              Christian punk is not a contradiction. Punk's core values — radical authenticity, community over commerce, rage at injustice, and care for the marginalized — map naturally onto a prophetic faith tradition. 
-              From the hardcore stages of the late '80s to massive festival crowds in the 2000s, Christian punks have screamed their faith as loudly as their politics. 
+              Christian punk is not a contradiction. Punk's core values — radical authenticity, community over commerce, rage at injustice, and care for the marginalized — map naturally onto a prophetic faith tradition.
+              From the hardcore stages of the late '80s to massive festival crowds in the 2000s, Christian punks have screamed their faith as loudly as their politics.
               The pit can be sacred. The distortion can be a prayer. These bands proved it.
             </p>
 
