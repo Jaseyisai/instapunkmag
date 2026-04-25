@@ -325,9 +325,8 @@ function StoreFinder() {
       } else {
         setResults([{ name: "No Results", type: "Info", reason: "No stores found for that location. Try a nearby city name instead.", items: "" }]);
       }
-   } catch (e) {
-  alert("Error: " + e.message);
-  setResults([{ name: "Search Error", type: "Error", reason: e.message, items: "" }]);
+ } catch (e) {
+  setResults([{ name: "Search Error", type: "Error", reason: "Could not connect to the store finder. Please try again in a moment.", items: "" }]);
 }
     setLoading(false);
   }
