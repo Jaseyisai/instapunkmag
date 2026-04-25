@@ -312,32 +312,12 @@ function StoreFinder() {
     setLoading(true);
     setResults(null);
     try {
-      const typeLabel = storeType === "all" ? "mainstream punk/alternative clothing stores AND thrift stores" :
-        storeType === "thrift" ? "thrift stores and secondhand shops" : "mainstream punk and alternative clothing stores";
-
-      const prompt = `You are a local shopping guide for punk and alternative culture. For the location: "${location}", list 6 real or plausible ${typeLabel} that a punk fan would love. 
-
-For each store include:
-- name (real store name or chain)
-- type (Thrift Store, Mainstream Punk/Alt, Vintage, Independent Boutique, or Online with Local Pickup)
-- why a punk would shop there (1 sentence)
-- example items they'd find
-
-Format as JSON array with keys: name, type, reason, items. Return ONLY the JSON array, no preamble.`;
-
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/find-stores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
+        body: JSON.stringify({ location, storeType }),
       });
-      const data = await response.json();
-      const text = data.content.map(i => i.text || "").join("");
-      const clean = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
+      const parsed = await response.json();
       setResults(parsed);
     } catch (e) {
       setResults([{ name: "Search Error", type: "Error", reason: "Could not fetch results. Try again.", items: "" }]);
@@ -466,10 +446,10 @@ export default function PunkHub() {
         .site-logo {
           font-family: 'Permanent Marker', cursive;
           font-size: clamp(1.4rem, 4vw, 2.2rem);
-          color: var(--red);
-          letter-spacing: -1px;
+          color: var(--white);
+          letter-spacing: 2px;
           padding: 0.75rem 0;
-          text-shadow: 3px 3px 0 var(--yellow), 6px 6px 0 rgba(204,0,0,0.2);
+          text-shadow: 3px 3px 0 var(--red), 5px 5px 0 rgba(204,0,0,0.3);
           white-space: nowrap;
           cursor: pointer;
         }
@@ -996,8 +976,8 @@ export default function PunkHub() {
       {/* HEADER */}
       <header className="punk-header">
         <div className={`site-logo ${glitching ? "glitch" : ""}`} onClick={() => scrollToSection("HOME")}>
-          RAWDIRT<em style={{color:"#f5c400"}}>.</em>PUNK
-          <span className="sub">// THE COMPLETE CULTURE HUB //</span>
+          INSTA <em style={{color:"#ff2020", WebkitTextStroke:"0px", textShadow:"0 0 20px rgba(255,32,32,0.6)"}}>PUNK</em> MAG
+          <span className="sub">// INSTA PUNK MAG //</span>
         </div>
         <nav className={`punk-nav ${menuOpen ? "open" : ""}`}>
           {SECTIONS.map(s => (
@@ -1015,7 +995,7 @@ export default function PunkHub() {
           <section className="hero">
             <div className="diagonal-tape" />
             <div className="hero-anarchy">Ⓐ</div>
-            <h1 className="hero-title">No Gods.<br /><em>No Masters.</em><br />All Culture.</h1>
+            <h1 className="hero-title">One Sound.<br /><em>No Rules.</em><br />All Culture.</h1>
             <p className="hero-sub">// FASHION · MUSIC · HISTORY · COMMUNITY · FAITH //</p>
             <div className="hero-ctas">
               <button className="cta-btn cta-primary" onClick={() => scrollToSection("HISTORY")}>EXPLORE HISTORY</button>
@@ -1026,7 +1006,7 @@ export default function PunkHub() {
           <div className="section-wrap">
             <div className="manifesto">
               <p className="manifesto-text">Punk is not just music. It's a way of thinking. A way of refusing. A way of making something out of nothing and saying it louder than anyone who told you to be quiet.</p>
-              <p className="manifesto-attr">— RAWDIRT.PUNK MANIFESTO</p>
+              <p className="manifesto-attr">— INSTA PUNK MAG MANIFESTO</p>
             </div>
 
             <div className="punk-divider"><span>// WHAT'S INSIDE //</span></div>
@@ -1376,7 +1356,7 @@ export default function PunkHub() {
 
       {/* FOOTER */}
       <footer className="punk-footer">
-        <div className="footer-logo">RAWDIRT.PUNK</div>
+        <div className="footer-logo">INSTA <span style={{color:"#ff2020", textShadow:"0 0 16px rgba(255,32,32,0.5)"}}>PUNK</span> MAG</div>
         <div className="footer-icons">
           {["🎸", "✊", "Ⓐ", "📋", "✝️"].map((e, i) => <span key={i}>{e}</span>)}
         </div>
