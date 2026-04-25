@@ -13,6 +13,15 @@ const PUNK_BANDS = [
   { name: "Siouxsie and the Banshees", era: "1976–1996", origin: "London, UK", genre: "Post-Punk / Gothic Rock", desc: "Evolved from punk's raw edge into the founders of goth rock. Darkly majestic." },
 ];
 
+const NEW_MUSIC_CARDS = [
+  { title: "Amyl and the Sniffers", genre: "Pub Rock / Punk", desc: "Australia's most ferocious band right now. Raw, sweaty, and absolutely unhinged live.", emoji: "🔥" },
+  { title: "Scowl", genre: "Hardcore Punk", desc: "Santa Cruz hardcore with Kat Moss on vocals. Aggressive, political, and one of the most exciting new hardcore acts in years.", emoji: "⚡" },
+  { title: "IDLES", genre: "Post-Punk / Art Punk", desc: "Bristol's finest. Brutalist anthems about toxic masculinity, Brexit, and grief. Cathartic punk for the modern age.", emoji: "✊" },
+  { title: "Militarie Gun", genre: "Hardcore / Post-Hardcore", desc: "Los Angeles hardcore that somehow sounds like a massive pop record. Hooks sharp enough to draw blood.", emoji: "🎸" },
+  { title: "Destroy Boys", genre: "Punk Rock", desc: "Sacramento trio who grew up DIY and never forgot it. Loud, melodic, and completely their own thing.", emoji: "💥" },
+  { title: "The Chats", genre: "Garage Punk", desc: "Three Australians who recorded their debut in a shed. The songs are two minutes long. Every one is perfect.", emoji: "🍺" },
+];
+
 const TIMELINE = [
   { year: "1974–1975", event: "Proto-Punk Emerges", detail: "The Ramones form in NYC. Television and Patti Smith play CBGB. The blueprint is laid." },
   { year: "1976", event: "Year Zero", detail: "Sex Pistols sign to EMI. The Clash, Buzzcocks, and Siouxsie all form. UK punk explodes." },
@@ -161,46 +170,46 @@ const DIY_TOOLS_ESSENTIALS = [
 
 const ARTICLES = [
   {
-    title: "Why Punk Still Matters in 2025",
-    category: "Culture",
-    excerpt: "In an era of algorithmic pop and corporate rebellion, punk's core — radical authenticity and DIY community — is more relevant than it's ever been.",
-    readTime: "6 min read",
-    emoji: "⚡",
-  },
-  {
-    title: "The Women Who Built Punk",
-    category: "History",
-    excerpt: "From Poly Styrene to Patti Smith to Corin Tucker: the women who defined punk are still being written out of the story. Here's a correction.",
-    readTime: "9 min read",
-    emoji: "✊",
-  },
-  {
-    title: "Zine Culture: Print Is Not Dead",
-    category: "DIY",
-    excerpt: "Photocopied, stapled, distributed at shows — the underground press that punk built is experiencing a full renaissance in the digital age.",
-    readTime: "5 min read",
-    emoji: "📋",
-  },
-  {
-    title: "Global Punk: From Jakarta to Lagos",
-    category: "World",
-    excerpt: "Indonesia has one of the world's largest punk scenes. Nigeria's punk community is exploding. The sound is universal, the anger is local.",
-    readTime: "8 min read",
-    emoji: "🌍",
-  },
-  {
-    title: "Thrift Punk: Looking Dangerous for $12",
-    category: "Fashion",
-    excerpt: "Building a full punk wardrobe without a trust fund or a Hot Topic credit card. A practical guide to thrift-store subversion.",
-    readTime: "4 min read",
-    emoji: "🛍️",
-  },
-  {
-    title: "Straight Edge: Punk Without the Poison",
-    category: "Subculture",
-    excerpt: "Minor Threat's Ian MacKaye wrote three lines. A global movement of sober, drug-free punks followed. The Xs still mean something.",
+    title: "The Anatomy of a Perfect Punk Riff",
+    category: "Music",
+    excerpt: "Three chords, maximum fury. How punk distilled rock and roll down to its bare bones — and why that simplicity turned out to be the most radical thing anyone ever did with a guitar.",
     readTime: "7 min read",
-    emoji: "✖️",
+    emoji: "🎸",
+  },
+  {
+    title: "Punk Venues: The Dying Heartbeat of the Scene",
+    category: "Culture",
+    excerpt: "From CBGB to your city's basement — the small venues where punk lives are disappearing fast. Why saving them matters more than any reunion tour.",
+    readTime: "6 min read",
+    emoji: "🏚️",
+  },
+  {
+    title: "How to Build a Battle Jacket That Tells Your Story",
+    category: "DIY",
+    excerpt: "The cut-off denim vest is punk's most personal canvas. A guide to sourcing patches, planning your back panel, and building a wearable autobiography one pin at a time.",
+    readTime: "5 min read",
+    emoji: "🦺",
+  },
+  {
+    title: "Ska Punk: The Genre Everyone Pretends to Forget",
+    category: "Music",
+    excerpt: "Horns, checkered patterns, and mosh pits — ska punk had its moment and the internet will never let it live it down. But here's the thing: it was actually great.",
+    readTime: "8 min read",
+    emoji: "🎺",
+  },
+  {
+    title: "Faith and Fury: Inside the Christian Hardcore Scene",
+    category: "Faith",
+    excerpt: "Long before Underoath played arenas, Christian hardcore was a sweaty secret shared between believers in basements. The theology was heavy. The breakdowns were heavier.",
+    readTime: "9 min read",
+    emoji: "✝️",
+  },
+  {
+    title: "Dr. Martens: From Factory Floors to Punk Icons",
+    category: "Fashion",
+    excerpt: "Klaus Märtens designed them for his sore ankle. British skinheads adopted them. Punks made them immortal. The strange, working-class journey of the world's most rebellious boot.",
+    readTime: "6 min read",
+    emoji: "👢",
   },
 ];
 
@@ -351,6 +360,176 @@ function DIYWorkshop() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// Show Finder Component
+function ShowFinder() {
+  const [location, setLocation] = useState("");
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function findShows() {
+    if (!location.trim()) return;
+    setLoading(true);
+    setResults(null);
+    try {
+      const response = await fetch("/api/find-shows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location }),
+      });
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setResults(data);
+      } else {
+        setResults([{ venue: "Search Error", band: "", genre: "", vibe: data.error || "Could not find shows. Try a nearby city.", tip: "" }]);
+      }
+    } catch (e) {
+      setResults([{ venue: "Search Error", band: "", genre: "", vibe: "Could not connect. Please try again.", tip: "" }]);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="store-finder">
+      <div className="finder-controls">
+        <input
+          type="text"
+          placeholder="Enter your city or zip code..."
+          value={location}
+          onChange={e => setLocation(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && findShows()}
+          className="finder-input"
+        />
+        <button onClick={findShows} className="finder-btn" disabled={loading}>
+          {loading ? "SEARCHING..." : "FIND SHOWS"}
+        </button>
+      </div>
+
+      {loading && (
+        <div className="finder-loading">
+          <div className="loading-bars">
+            {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />)}
+          </div>
+          <p>Scanning the underground...</p>
+        </div>
+      )}
+
+      {results && (
+        <div className="show-results">
+          {results.map((show, i) => (
+            <div key={i} className="show-card">
+              <div className="show-header">
+                <div>
+                  <div className="show-band">{show.band}</div>
+                  <div className="show-venue">📍 {show.venue}</div>
+                </div>
+                <span className="store-type-badge">{show.genre}</span>
+              </div>
+              <p className="store-reason">{show.vibe}</p>
+              {show.tip && <p className="show-tip">💡 {show.tip}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!results && !loading && (
+        <div className="finder-placeholder">
+          <div className="anarchy-symbol">🎸</div>
+          <p>Enter your location to find punk shows and venues near you</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Music Feature Reader Component
+function MusicReader({ track, onClose }) {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchFeature() {
+      try {
+        const response = await fetch("/api/generate-music", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: track.title, genre: track.genre, desc: track.desc }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setContent(data);
+      } catch (e) {
+        setError("Could not load feature. Please try again.");
+      }
+      setLoading(false);
+    }
+    fetchFeature();
+  }, [track]);
+
+  return (
+    <div className="article-reader-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="article-reader">
+        <button className="article-reader-close" onClick={onClose}>✕ CLOSE</button>
+
+        {loading && (
+          <div className="article-reader-loading">
+            <div className="loading-bars">
+              {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />)}
+            </div>
+            <p>Generating music feature...</p>
+          </div>
+        )}
+
+        {error && <div className="article-reader-error">{error}</div>}
+
+        {content && (
+          <div className="article-reader-content">
+            <div className="ar-category">{track.genre}</div>
+            <h1 className="ar-headline">{content.headline || track.title}</h1>
+            <p className="ar-standfirst">{content.standfirst}</p>
+            <div className="ar-meta">
+              <span>{track.emoji}</span>
+              <span>Music Feature</span>
+              <span>Insta Punk Mag</span>
+            </div>
+            <div className="ar-divider" />
+            {content.body && content.body.split("\n\n").map((para, i) => {
+              if (i === 2 && content.pullquote) {
+                return (
+                  <div key={i}>
+                    <blockquote className="ar-pullquote">{content.pullquote}</blockquote>
+                    <p className="ar-para">{para}</p>
+                  </div>
+                );
+              }
+              return <p key={i} className="ar-para">{para}</p>;
+            })}
+            {content.listenTo && (
+              <div style={{marginTop:"1.5rem", padding:"1rem", background:"rgba(204,0,0,0.07)", borderLeft:"3px solid var(--red)"}}>
+                <div className="diy-tools-label" style={{marginBottom:"0.5rem"}}>// LISTEN TO</div>
+                {content.listenTo.map((item, i) => (
+                  <div key={i} style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.78rem", color:"#ccc", marginBottom:"0.3rem"}}>▶ {item}</div>
+                ))}
+              </div>
+            )}
+            {content.tags && (
+              <div className="ar-tags">
+                {content.tags.map((tag, i) => <span key={i} className="ar-tag">#{tag}</span>)}
+              </div>
+            )}
+            <div className="ar-kofi">
+              <p className="ar-kofi-text">Enjoyed this feature? Help keep Insta Punk Mag alive and independent.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+                ☕ BUY US A COFFEE ON KO-FI
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -528,6 +707,7 @@ export default function PunkHub() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [glitching, setGlitching] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [selectedTrack, setSelectedTrack] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -955,6 +1135,28 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
+        .show-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .show-card { background: var(--dark); border: 1px solid var(--mid); border-left: 4px solid var(--yellow); padding: 1.3rem; }
+        .show-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+        .show-band { font-family: 'Special Elite', cursive; font-size: 1.2rem; margin-bottom: 0.2rem; }
+        .show-venue { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--grey); letter-spacing: 0.05em; }
+        .show-tip { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--yellow); margin-top: 0.5rem; }
+
+        .new-music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .new-music-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          border-top: 3px solid var(--yellow);
+          padding: 1.3rem; cursor: pointer;
+          transition: transform 0.15s, border-color 0.15s;
+          position: relative; overflow: hidden;
+        }
+        .new-music-card:hover { transform: translateY(-4px); border-top-color: var(--red); }
+        .new-music-card:hover::after { content: '→ READ FEATURE'; position: absolute; bottom: 1rem; right: 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--red); letter-spacing: 0.1em; }
+        .new-music-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+        .new-music-genre { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--yellow); text-transform: uppercase; margin-bottom: 0.4rem; }
+        .new-music-title { font-family: 'Special Elite', cursive; font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .new-music-desc { font-size: 0.87rem; color: #bbb; line-height: 1.65; font-weight: 300; }
+
         /* === DIY SECTION === */
         .diy-section-header {
           display: flex; align-items: center; gap: 1rem;
@@ -1287,9 +1489,28 @@ export default function PunkHub() {
       {/* MUSIC */}
       {activeSection === "MUSIC" && (
         <div className="section-wrap">
+          {selectedTrack && (
+            <MusicReader track={selectedTrack} onClose={() => setSelectedTrack(null)} />
+          )}
           <h2 className="section-title">The Music</h2>
           <p className="section-sub">// BANDS THAT STARTED FIRES AND NEVER LOOKED BACK //</p>
 
+          <div className="punk-divider"><span>// NEW & NOW — CLICK TO READ FULL FEATURE //</span></div>
+          <div className="new-music-grid">
+            {NEW_MUSIC_CARDS.map((track, i) => (
+              <div key={i} className="new-music-card" onClick={() => setSelectedTrack(track)}>
+                <span className="new-music-emoji">{track.emoji}</span>
+                <div className="new-music-genre">{track.genre}</div>
+                <div className="new-music-title">{track.title}</div>
+                <div className="new-music-desc">{track.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// FIND SHOWS NEAR YOU //</span></div>
+          <ShowFinder />
+
+          <div className="punk-divider"><span>// ESSENTIAL BANDS //</span></div>
           <div className="band-grid">
             {PUNK_BANDS.map((b, i) => (
               <div key={i} className="band-card">
