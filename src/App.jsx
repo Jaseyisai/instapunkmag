@@ -215,16 +215,50 @@ const CHRISTIAN_PUNK_BANDS = [
   { name: "Project 86", genre: "Christian Hardcore / Post-Hardcore", note: "Aggressive, literary, and spiritually complex. A thinking-person's hardcore." },
 ];
 
-const GALLERY_ITEMS = [
-  { url: "https://images.unsplash.com/photo-1598387993441-a364f854cde4?w=600", alt: "Punk show" },
-  { url: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600", alt: "Leather jacket studs" },
-  { url: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=600", alt: "Guitar close up" },
-  { url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600", alt: "Concert crowd" },
-  { url: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600", alt: "Band on stage" },
-  { url: "https://images.unsplash.com/photo-1501386761578-eaa54b945b46?w=600", alt: "Crowd at show" },
-  { url: "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?w=600", alt: "Punk musician" },
-  { url: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600", alt: "Concert lights" },
+const GALLERY_PROMPTS = [
+  { prompt: "punk rock concert crowd moshing stage lights dramatic dark atmosphere", alt: "Punk show" },
+  { prompt: "studded leather punk jacket spikes patches close up detail photography", alt: "Studded leather jacket" },
+  { prompt: "electric guitar close up distortion pedals dark moody punk rock aesthetic", alt: "Guitar close up" },
+  { prompt: "punk rock band performing on stage dramatic lighting crowd energy", alt: "Band on stage" },
+  { prompt: "punk fashion mohawk hair colorful spikes street style portrait", alt: "Punk style portrait" },
+  { prompt: "vintage vinyl records punk albums underground record store aesthetic", alt: "Vinyl records" },
+  { prompt: "punk zine collage cut and paste typography anarchy symbols photocopied", alt: "Punk zine" },
+  { prompt: "Dr Martens boots worn leather laces punk fashion street photography", alt: "Dr Martens boots" },
 ];
+
+// Gallery Image Component — generates unique AI image via Pollinations on each load
+function GalleryImage({ prompt, alt, span }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  // Add a random seed so every page load gets a fresh unique image
+  const seed = useRef(Math.floor(Math.random() * 999999));
+  const encoded = encodeURIComponent(prompt);
+  const url = `https://image.pollinations.ai/prompt/${encoded}?width=800&height=600&seed=${seed.current}&nologo=true`;
+
+  return (
+    <div className="gallery-item" style={span ? { gridColumn: `span ${span}` } : {}}>
+      {!loaded && !error && (
+        <div className="gallery-placeholder">
+          <div className="gallery-spinner" />
+          <span>Generating...</span>
+        </div>
+      )}
+      {error && (
+        <div className="gallery-placeholder">
+          <span style={{ color: "var(--grey)", fontSize: "0.75rem" }}>Image unavailable</span>
+        </div>
+      )}
+      <img
+        src={url}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        style={{ display: loaded ? "block" : "none" }}
+      />
+      {loaded && <div className="gallery-overlay" />}
+    </div>
+  );
+}
 
 // DIY Workshop Component
 function DIYWorkshop() {
@@ -1027,6 +1061,25 @@ export default function PunkHub() {
         .diy-tool-name { font-family: 'Special Elite', cursive; font-size: 1rem; margin-bottom: 0.3rem; }
         .diy-tool-use { font-size: 0.82rem; color: #aaa; line-height: 1.55; font-weight: 300; }
 
+        .gallery-placeholder {
+          width: 100%; height: 100%;
+          background: var(--dark);
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          gap: 0.75rem;
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 0.7rem; color: var(--grey);
+          letter-spacing: 0.1em;
+        }
+        .gallery-spinner {
+          width: 28px; height: 28px;
+          border: 2px solid var(--mid);
+          border-top-color: var(--red);
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* === ARTICLE READER === */
         .article-reader-overlay {
           position: fixed; inset: 0; z-index: 500;
@@ -1439,26 +1492,32 @@ export default function PunkHub() {
       {activeSection === "GALLERY" && (
         <div className="section-wrap">
           <h2 className="section-title">Gallery</h2>
-          <p className="section-sub">// PUNK PHOTOGRAPHY · CULTURE · ATTITUDE //</p>
+          <p className="section-sub">// AI-GENERATED PUNK IMAGERY · UNIQUE EVERY VISIT //</p>
+
+          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.72rem", color:"var(--grey)", marginBottom:"1.5rem", letterSpacing:"0.08em"}}>
+            ⚡ Each image is generated fresh by AI on every page load — no two visits look the same.
+          </p>
 
           <div className="gallery-grid">
-            {GALLERY_ITEMS.map((img, i) => (
-              <div key={i} className="gallery-item">
-                <img src={img.url} alt={img.alt} loading="lazy" />
-                <div className="gallery-overlay" />
-              </div>
+            {GALLERY_PROMPTS.map((item, i) => (
+              <GalleryImage
+                key={i}
+                prompt={item.prompt}
+                alt={item.alt}
+                span={i === 0 ? 2 : i === 4 ? 2 : null}
+              />
             ))}
           </div>
 
           <div className="punk-divider"><span>// ICONIC VIDEOS //</span></div>
           <div className="video-grid">
             {[
-              { title: "The Clash — 'London Calling' Live at Shea Stadium", url: "https://www.youtube.com/watch?v=EfEJHFDHoZQ" },
-              { title: "Ramones — 'Blitzkrieg Bop' (Official Video)", url: "https://www.youtube.com/watch?v=m-fGCRF1mGE" },
-              { title: "Dead Kennedys — 'Holiday in Cambodia' Live", url: "https://www.youtube.com/watch?v=3_S-jLsZDqI" },
-              { title: "Bad Brains — 'Pay to Cum' Live CBGB 1982", url: "https://www.youtube.com/watch?v=BxbiS_KDtZY" },
-              { title: "Bikini Kill — 'Rebel Girl' Live", url: "https://www.youtube.com/watch?v=jUcOGCMrEhY" },
-              { title: "Minor Threat — 'Straight Edge' Documentary", url: "https://www.youtube.com/watch?v=g3ajlMSPwCY" },
+              { title: "The Clash — 'London Calling' (Official HD Video)", url: "https://www.youtube.com/watch?v=a3XqMtam1I0" },
+              { title: "Ramones — 'Blitzkrieg Bop' (Official Music Video)", url: "https://www.youtube.com/watch?v=268C3N2dDYk" },
+              { title: "Dead Kennedys — 'Holiday in Cambodia' (Official Video)", url: "https://www.youtube.com/watch?v=Qr6NOsluHYg" },
+              { title: "Bad Brains — 'Pay to Cum' Live at CBGB's 1979", url: "https://www.youtube.com/watch?v=OP_gUFvN3Mc" },
+              { title: "Bad Brains — 'Banned in D.C.' (Official)", url: "https://www.youtube.com/watch?v=221K0gSHBJc" },
+              { title: "Black Flag — 'Rise Above' (Official Video)", url: "https://www.youtube.com/watch?v=9TLHM-TCNWQ" },
             ].map((v, i) => (
               <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
                 <div className="video-embed">
