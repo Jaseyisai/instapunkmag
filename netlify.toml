@@ -27,3 +27,13 @@
   from = "/api/generate-music"
   to = "/.netlify/functions/generate-music"
   status = 200
+
+[[redirects]]
+  from = "/api/find-christian-shows"
+  to = "/.netlify/functions/find-christian-shows"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-christian-music"
+  to = "/.netlify/functions/generate-christian-music"
+  status = 200
