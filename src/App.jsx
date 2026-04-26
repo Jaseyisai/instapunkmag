@@ -244,6 +244,66 @@ const GALLERY_PROMPTS = [
   { prompt: "Dr Martens boots worn leather laces punk fashion street photography", alt: "Dr Martens boots" },
 ];
 
+const PUNK_PHOTOGRAPHERS = [
+  {
+    name: "Joe Strummer & Pennie Smith",
+    era: "1976–1982",
+    known: "The Clash",
+    bio: "Pennie Smith's iconic shot of Paul Simonon smashing his bass at the Palladium became one of rock photography's most defining images — used on the London Calling cover. Her work captured punk's raw physicality better than almost anyone.",
+    emoji: "📷",
+    gallery: "https://www.gettyimages.com/search/2/image?phrase=pennie+smith+punk",
+  },
+  {
+    name: "Bob Gruen",
+    era: "1970s–present",
+    known: "New York Punk Scene",
+    bio: "New York's premier rock photographer. Gruen documented the CBGB era from inside — the Ramones, Blondie, New York Dolls, and countless others. His images define what early American punk looked like.",
+    emoji: "📸",
+    gallery: "https://www.bobgruen.com",
+  },
+  {
+    name: "Roberta Bayley",
+    era: "1975–1982",
+    known: "CBGB Scene",
+    bio: "The door person at CBGB who became one of punk's most important photographers. Shot the Ramones' debut album cover. Her intimate access produced some of the most honest images of the early punk scene.",
+    emoji: "🎞️",
+    gallery: "https://www.gettyimages.com/search/2/image?phrase=roberta+bayley+punk",
+  },
+  {
+    name: "Dennis Morris",
+    era: "1976–1980",
+    known: "Sex Pistols / Jamaican Reggae",
+    bio: "Started photographing Bob Marley at 13, then became the Sex Pistols' official photographer at 16. His images of the Pistols and the early UK punk scene are unmatched in their intimacy and raw energy.",
+    emoji: "📷",
+    gallery: "https://www.dennismorris.com",
+  },
+  {
+    name: "Glen E. Friedman",
+    era: "1978–present",
+    known: "Hardcore / Skateboarding",
+    bio: "Documented the birth of both hardcore punk and skateboarding. His photos of Black Flag, Minor Threat, Bad Brains, and the Beastie Boys defined the visual language of American hardcore. Pure DIY ethos.",
+    emoji: "📸",
+    gallery: "https://www.burningflags.com",
+  },
+  {
+    name: "Virginia Turbett",
+    era: "1976–1984",
+    known: "UK Punk Scene",
+    bio: "One of the few women photographing the UK punk scene from the inside. Turbett's shots of The Clash, Buzzcocks, and Siouxsie capture the fashion and fury of punk's first wave with remarkable intimacy.",
+    emoji: "🎞️",
+    gallery: "https://www.gettyimages.com/search/2/image?phrase=virginia+turbett+punk",
+  },
+];
+
+const PUNK_PHOTO_GALLERIES = [
+  { name: "Getty Images — Punk Archive", desc: "Vast archive of professional punk photography spanning 1976 to present. Thousands of images from both UK and US scenes.", url: "https://www.gettyimages.com/search/2/image?phrase=punk+rock+1970s", emoji: "🖼️" },
+  { name: "Bob Gruen Photography", desc: "The official site of New York's greatest rock photographer. Decades of punk, rock, and street photography.", url: "https://www.bobgruen.com", emoji: "📷" },
+  { name: "Glen E. Friedman — Burning Flags", desc: "Hardcore punk and skateboarding photography from one of the scene's most important visual chroniclers.", url: "https://www.burningflags.com", emoji: "🔥" },
+  { name: "Dennis Morris Official", desc: "Sex Pistols, Bob Marley, and UK punk era photography from the teenager who was there for all of it.", url: "https://www.dennismorris.com", emoji: "📸" },
+  { name: "Punk77 Photo Archive", desc: "Fan-curated archive of UK punk photography from 1976–1979. Raw, real, and priceless historical documentation.", url: "https://www.punk77.co.uk", emoji: "🎞️" },
+  { name: "CBGB Photo Archives", desc: "Images from the legendary New York venue that launched American punk. Artists, crowds, and chaos from the Bowery.", url: "https://www.gettyimages.com/search/2/image?phrase=cbgb+punk", emoji: "🏚️" },
+];
+
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
   const [imgSrc, setImgSrc] = useState(null);
@@ -1345,7 +1405,44 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
-        .show-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        /* === PHOTOGRAPHERS === */
+        .photographer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .photographer-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          border-top: 3px solid var(--white);
+          padding: 1.5rem;
+          transition: transform 0.15s, border-top-color 0.15s;
+        }
+        .photographer-card:hover { transform: translateY(-4px); border-top-color: var(--red); }
+        .photographer-emoji { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+        .photographer-name { font-family: 'Special Elite', cursive; font-size: 1.3rem; margin-bottom: 0.25rem; }
+        .photographer-era { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--yellow); letter-spacing: 0.12em; margin-bottom: 0.2rem; }
+        .photographer-known { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--grey); letter-spacing: 0.08em; margin-bottom: 0.75rem; text-transform: uppercase; }
+        .photographer-bio { font-size: 0.88rem; color: #ccc; line-height: 1.7; font-weight: 300; margin-bottom: 1rem; }
+        .photographer-link {
+          display: inline-block;
+          font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+          letter-spacing: 0.1em; color: var(--red);
+          text-decoration: none; border-bottom: 1px solid var(--red);
+          padding-bottom: 0.1rem; transition: color 0.15s, border-color 0.15s;
+        }
+        .photographer-link:hover { color: var(--white); border-color: var(--white); }
+
+        .photo-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .photo-gallery-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          padding: 1.3rem; text-decoration: none; color: var(--white);
+          display: block; transition: transform 0.15s, border-color 0.15s;
+          position: relative; overflow: hidden;
+        }
+        .photo-gallery-card::after { content: '→ VISIT GALLERY'; position: absolute; bottom: 1rem; right: 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--red); letter-spacing: 0.1em; opacity: 0; transition: opacity 0.15s; }
+        .photo-gallery-card:hover { transform: translateY(-3px); border-color: var(--grey); }
+        .photo-gallery-card:hover::after { opacity: 1; }
+        .photo-gallery-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+        .photo-gallery-name { font-family: 'Special Elite', cursive; font-size: 1.1rem; margin-bottom: 0.4rem; }
+        .photo-gallery-desc { font-size: 0.83rem; color: #aaa; line-height: 1.6; font-weight: 300; }
+
+        /* === SHOW RESULTS === */
         .show-card { background: var(--dark); border: 1px solid var(--mid); border-left: 4px solid var(--yellow); padding: 1.3rem; }
         .show-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
         .show-band { font-family: 'Special Elite', cursive; font-size: 1.2rem; margin-bottom: 0.2rem; }
@@ -2018,6 +2115,36 @@ export default function PunkHub() {
                   <div className="video-play">▶</div>
                   <div className="video-title">{v.title}</div>
                 </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// LEGENDARY PUNK PHOTOGRAPHERS //</span></div>
+          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.75rem", color:"var(--grey)", marginBottom:"2rem", lineHeight:"1.7"}}>
+            Punk was always documented from the inside. These photographers weren't observers — they were part of the scene, camera in hand, capturing history as it happened.
+          </p>
+          <div className="photographer-grid">
+            {PUNK_PHOTOGRAPHERS.map((p, i) => (
+              <div key={i} className="photographer-card">
+                <span className="photographer-emoji">{p.emoji}</span>
+                <div className="photographer-name">{p.name}</div>
+                <div className="photographer-era">{p.era}</div>
+                <div className="photographer-known">Known for: {p.known}</div>
+                <p className="photographer-bio">{p.bio}</p>
+                <a href={p.gallery} target="_blank" rel="noopener noreferrer" className="photographer-link">
+                  → VIEW PHOTOGRAPHY
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// ONLINE PUNK PHOTO GALLERIES //</span></div>
+          <div className="photo-gallery-grid">
+            {PUNK_PHOTO_GALLERIES.map((g, i) => (
+              <a key={i} href={g.url} target="_blank" rel="noopener noreferrer" className="photo-gallery-card">
+                <span className="photo-gallery-emoji">{g.emoji}</span>
+                <div className="photo-gallery-name">{g.name}</div>
+                <p className="photo-gallery-desc">{g.desc}</p>
               </a>
             ))}
           </div>
