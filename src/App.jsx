@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "CHRISTIAN PUNK", "GALLERY"];
+const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "CHRISTIAN PUNK", "GALLERY", "MEDIA"];
 
 const PUNK_BANDS = [
   { name: "The Clash", era: "1976–1986", origin: "London, UK", genre: "Punk Rock / Post-Punk", desc: "One of the most influential punk bands ever, blending punk with reggae, ska, and rockabilly." },
@@ -231,6 +231,46 @@ const NEW_CHRISTIAN_MUSIC_CARDS = [
   { title: "Switchfoot", genre: "Alternative / Post-Grunge", desc: "Three decades in and still writing anthems. Switchfoot's ability to write songs about faith that resonate with everyone is genuinely remarkable.", emoji: "🌊" },
   { title: "MxPx", genre: "Pop Punk", desc: "Bremerton's finest have been playing Christian pop-punk since 1992 and show no signs of slowing down. Melodic, joyful, and relentlessly positive.", emoji: "⚡" },
   { title: "The Devil Wears Prada", genre: "Metalcore / Deathcore", desc: "Ohio metalcore titans whose blend of brutal breakdowns and Christian themes helped define an era. Their comeback material is some of their best work.", emoji: "💥" },
+];
+
+const PUNK_BOOKS = [
+  { title: "Please Kill Me: The Uncensored Oral History of Punk", author: "Legs McNeil & Gillian McCain", year: "1996", genre: "Oral History", desc: "The definitive oral history of punk told entirely in the words of the people who lived it. Raw, funny, tragic, and essential.", emoji: "📖", buy: "https://www.amazon.com/s?k=Please+Kill+Me+punk+oral+history" },
+  { title: "England's Dreaming", author: "Jon Savage", year: "1991", genre: "Cultural History", desc: "The most thorough and scholarly account of UK punk ever written. Jon Savage traces punk from its roots to its legacy with brilliant cultural analysis.", emoji: "📚", buy: "https://www.amazon.com/s?k=England%27s+Dreaming+Jon+Savage" },
+  { title: "Punk: An Aesthetic", author: "Johan Kugelberg & Jon Savage", year: "2012", genre: "Art / Photography", desc: "A stunning visual document of punk's graphic art, zines, posters, and photography. Essential for anyone interested in punk's visual culture.", emoji: "🎨", buy: "https://www.amazon.com/s?k=Punk+An+Aesthetic+Kugelberg" },
+  { title: "Our Band Could Be Your Life", author: "Michael Azerrad", year: "2001", genre: "Music History", desc: "Thirteen bands, one era, one movement. Azerrad chronicles American indie and hardcore from 1981–1991 through bands like Black Flag, Husker Du, and Sonic Youth.", emoji: "📖", buy: "https://www.amazon.com/s?k=Our+Band+Could+Be+Your+Life+Azerrad" },
+  { title: "Rotten: No Irish, No Blacks, No Dogs", author: "John Lydon", year: "1994", genre: "Autobiography", desc: "John Lydon's furious, funny, and surprisingly moving autobiography. Essential first-person history of the Sex Pistols from the man who was there.", emoji: "📚", buy: "https://www.amazon.com/s?k=Rotten+No+Irish+No+Blacks+No+Dogs" },
+  { title: "We Got the Neutron Bomb", author: "Marc Spitz & Brendan Mullen", year: "2001", genre: "Oral History", desc: "The oral history of LA punk — X, the Germs, Black Flag, and the wild, sun-bleached California scene that parallel the UK explosion.", emoji: "📖", buy: "https://www.amazon.com/s?k=We+Got+the+Neutron+Bomb+LA+punk" },
+  { title: "The Riot Grrrl Collection", author: "Lisa Darms (ed.)", year: "2013", genre: "Feminism / Zines", desc: "An archive of Riot Grrrl zines, manifestos, and ephemera from the early 1990s feminist punk movement. Angry, brilliant, and vital.", emoji: "📚", buy: "https://www.amazon.com/s?k=Riot+Grrrl+Collection+Lisa+Darms" },
+  { title: "American Hardcore: A Tribal History", author: "Steven Blush", year: "2001", genre: "Music History", desc: "The bible of American hardcore punk. Blush interviews hundreds of musicians and scene participants to document the explosive 1980–1986 hardcore era.", emoji: "📖", buy: "https://www.amazon.com/s?k=American+Hardcore+Tribal+History+Blush" },
+];
+
+const PUNK_FILMS = [
+  { title: "Sid and Nancy", year: "1986", director: "Alex Cox", genre: "Drama", desc: "Gary Oldman as Sid Vicious in the tragic love story of punk's most notorious couple. Brutal, romantic, and unforgettable.", emoji: "🎬", watch: "https://www.amazon.com/s?k=Sid+and+Nancy+1986+film" },
+  { title: "Repo Man", year: "1984", director: "Alex Cox", genre: "Sci-Fi / Punk", desc: "The ultimate cult punk film. Emilio Estevez repossesses cars in a paranoid, alien-infused LA. The Plugz and Iggy Pop on the soundtrack.", emoji: "🎬", watch: "https://www.amazon.com/s?k=Repo+Man+1984+film" },
+  { title: "Suburbia", year: "1983", director: "Penelope Spheeris", genre: "Drama", desc: "Runaway teens form a punk squat in the LA suburbs. Raw, unpolished, and painfully authentic. Spheeris shot it like a documentary.", emoji: "🎬", watch: "https://www.amazon.com/s?k=Suburbia+1983+punk+film" },
+  { title: "The Decline of Western Civilization", year: "1981", director: "Penelope Spheeris", genre: "Documentary / Drama", desc: "Part documentary, part narrative — Spheeris captures the LA punk scene in its rawest form. X, Black Flag, the Germs, and Circle Jerks all appear.", emoji: "🎬", watch: "https://www.amazon.com/s?k=Decline+Western+Civilization+1981" },
+  { title: "SLC Punk!", year: "1998", director: "James Merendino", genre: "Comedy / Drama", desc: "Two punk outsiders navigate Salt Lake City in 1985. Funny, heartfelt, and surprisingly deep on what punk identity actually means.", emoji: "🎬", watch: "https://www.amazon.com/s?k=SLC+Punk+1998" },
+  { title: "Green Room", year: "2015", director: "Jeremy Saulnier", genre: "Thriller", desc: "A punk band accidentally witnesses a murder at a neo-Nazi venue. Brutal, tense, and unexpectedly moving. Patrick Stewart is terrifying.", emoji: "🎬", watch: "https://www.amazon.com/s?k=Green+Room+2015+film" },
+];
+
+const PUNK_SHORT_FILMS = [
+  { title: "The Filth and the Fury Clips", year: "1977", director: "Various", genre: "Archive Footage", desc: "Raw TV appearances and street interviews from the height of UK punk. The Bill Grundy incident. The chaos. The realness.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=sex+pistols+1977+tv+appearances" },
+  { title: "Punk in London", year: "1977", director: "Wolfgang Büld", genre: "Documentary Short", desc: "German filmmaker Wolfgang Büld captured the London punk scene at its peak in summer 1977. Intimate street-level footage of the movement.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=Punk+in+London+1977+Wolfgang+Buld" },
+  { title: "DOA: A Right of Passage", year: "1980", director: "Lech Kowalski", genre: "Concert Film", desc: "Sex Pistols US tour footage plus interviews with punk figures. Raw, chaotic, and essential. The American punk dream collapsing in real time.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=DOA+Right+of+Passage+1980+punk" },
+  { title: "The Clash: Westway to the World", year: "2000", director: "Don Letts", genre: "Short Documentary", desc: "Don Letts' intimate portrait of The Clash. Band members reflect on their rise, politics, and legacy. Honest and deeply moving.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=Clash+Westway+to+the+World" },
+  { title: "Afro-Punk Short Films", year: "2003", director: "James Spooner", genre: "Documentary Short", desc: "Short films exploring Black identity in the punk and hardcore scene. The foundation for the Afropunk Festival and movement.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=Afropunk+documentary+James+Spooner" },
+  { title: "CBGB & OMFUG: The Early Years", year: "Various", director: "Various", genre: "Archive", desc: "Archival footage and fan films from the legendary Bowery venue. The Ramones, Television, Blondie — in their natural habitat.", emoji: "🎞️", watch: "https://www.youtube.com/results?search_query=CBGB+early+footage+punk+1970s" },
+];
+
+const PUNK_DOCUMENTARIES = [
+  { title: "The Filth and the Fury", year: "2000", director: "Julien Temple", genre: "Documentary", desc: "The definitive Sex Pistols documentary, told entirely by the band themselves. Corrects the myths. Essential viewing.", emoji: "🎥", watch: "https://www.amazon.com/s?k=The+Filth+and+the+Fury+documentary" },
+  { title: "American Hardcore", year: "2006", director: "Paul Rachman", genre: "Documentary", desc: "Based on Steven Blush's book — interviews with Black Flag, Minor Threat, Bad Brains, and dozens more. The hardcore story finally told properly.", emoji: "🎥", watch: "https://www.amazon.com/s?k=American+Hardcore+2006+documentary" },
+  { title: "Afropunk", year: "2003", director: "James Spooner", genre: "Documentary", desc: "Explores Black identity within the punk and hardcore scene. Sparked a global movement and the Afropunk Festival. Groundbreaking.", emoji: "🎥", watch: "https://www.amazon.com/s?k=Afropunk+documentary+2003" },
+  { title: "The Punk Singer", year: "2013", director: "Sini Anderson", genre: "Documentary", desc: "The story of Kathleen Hanna — Bikini Kill, Le Tigre, and Riot Grrrl. Honest, inspiring, and infuriating in the best way.", emoji: "🎥", watch: "https://www.amazon.com/s?k=The+Punk+Singer+documentary+Kathleen+Hanna" },
+  { title: "End of the Century: The Story of the Ramones", year: "2003", director: "Jim Fields & Michael Gramaglia", genre: "Documentary", desc: "The full Ramones story — dysfunction, genius, tragedy. One of the greatest rock documentaries ever made.", emoji: "🎥", watch: "https://www.amazon.com/s?k=End+of+Century+Ramones+documentary" },
+  { title: "The Decline of Western Civilization", year: "1981", director: "Penelope Spheeris", genre: "Documentary", desc: "The essential LA punk document. X, Black Flag, Germs, Fear — all captured raw in their prime. Spheeris never flinched.", emoji: "🎥", watch: "https://www.amazon.com/s?k=Decline+Western+Civilization+documentary" },
+  { title: "Gimme Danger", year: "2016", director: "Jim Jarmusch", genre: "Documentary", desc: "Jim Jarmusch's love letter to Iggy Pop and the Stooges — punk's primal ancestors. Beautiful, funny, and essential pre-punk history.", emoji: "🎥", watch: "https://www.amazon.com/s?k=Gimme+Danger+Iggy+Pop+documentary" },
+  { title: "Salad Days: A Decade of Punk in Washington DC", year: "2014", director: "Scott Crawford", genre: "Documentary", desc: "The DC hardcore story — Minor Threat, Bad Brains, Fugazi, and the straight edge movement told by the people who built it.", emoji: "🎥", watch: "https://www.amazon.com/s?k=Salad+Days+DC+punk+documentary" },
 ];
 
 const GALLERY_PROMPTS = [
@@ -804,6 +844,114 @@ function ChristianMusicReader({ track, onClose }) {
   );
 }
 
+// Media Feature Reader Component
+function MediaReader({ item, onClose }) {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchFeature() {
+      try {
+        const response = await fetch("/api/generate-media", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: item.title,
+            author: item.author || item.director || "",
+            year: item.year,
+            genre: item.genre,
+            desc: item.desc,
+            mediaType: item.mediaType,
+          }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setContent(data);
+      } catch (e) {
+        setError("Could not load feature. Please try again.");
+      }
+      setLoading(false);
+    }
+    fetchFeature();
+  }, [item]);
+
+  return (
+    <div className="article-reader-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="article-reader">
+        <button className="article-reader-close" onClick={onClose}>✕ CLOSE</button>
+
+        {loading && (
+          <div className="article-reader-loading">
+            <div className="loading-bars">
+              {[...Array(8)].map((_, i) => <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />)}
+            </div>
+            <p>Generating feature...</p>
+          </div>
+        )}
+
+        {error && <div className="article-reader-error">{error}</div>}
+
+        {content && (
+          <div className="article-reader-content">
+            <div className="ar-category">{item.genre} · {item.year}</div>
+            <h1 className="ar-headline">{content.headline || item.title}</h1>
+            <p className="ar-standfirst">{content.standfirst}</p>
+            <div className="ar-meta">
+              <span>{item.emoji}</span>
+              <span>{item.author || item.director || ""}</span>
+              <span>Insta Punk Mag</span>
+            </div>
+            <div className="ar-divider" />
+            {content.body && content.body.split("\n\n").map((para, i) => {
+              if (i === 2 && content.pullquote) {
+                return (
+                  <div key={i}>
+                    <blockquote className="ar-pullquote">{content.pullquote}</blockquote>
+                    <p className="ar-para">{para}</p>
+                  </div>
+                );
+              }
+              return <p key={i} className="ar-para">{para}</p>;
+            })}
+            {content.whyItMatters && (
+              <div style={{marginTop:"1.5rem", padding:"1rem", background:"rgba(245,196,0,0.07)", borderLeft:"3px solid var(--yellow)"}}>
+                <div className="diy-tools-label" style={{marginBottom:"0.4rem"}}>// WHY IT MATTERS</div>
+                <p style={{fontSize:"0.9rem", color:"#ccc", lineHeight:"1.65", fontWeight:"300"}}>{content.whyItMatters}</p>
+              </div>
+            )}
+            {item.buy && (
+              <div style={{marginTop:"1rem"}}>
+                <a href={item.buy} target="_blank" rel="noopener noreferrer" className="finder-btn" style={{display:"inline-block", textDecoration:"none", marginRight:"0.75rem"}}>
+                  📖 FIND THIS BOOK
+                </a>
+              </div>
+            )}
+            {item.watch && (
+              <div style={{marginTop:"1rem"}}>
+                <a href={item.watch} target="_blank" rel="noopener noreferrer" className="finder-btn" style={{display:"inline-block", textDecoration:"none"}}>
+                  ▶ WATCH / FIND THIS
+                </a>
+              </div>
+            )}
+            {content.tags && (
+              <div className="ar-tags">
+                {content.tags.map((tag, i) => <span key={i} className="ar-tag">#{tag}</span>)}
+              </div>
+            )}
+            <div className="ar-kofi">
+              <p className="ar-kofi-text">Enjoyed this feature? Help keep Insta Punk Mag alive and independent.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+                ☕ BUY US A COFFEE ON KO-FI
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Article Reader Component
 function ArticleReader({ article, onClose }) {
   const [content, setContent] = useState(null);
@@ -978,6 +1126,7 @@ export default function PunkHub() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [selectedChristianTrack, setSelectedChristianTrack] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1405,6 +1554,24 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
+        /* === MEDIA CARDS === */
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.1rem; margin-bottom: 2rem; }
+        .media-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          border-top: 3px solid var(--red);
+          padding: 1.3rem; cursor: pointer;
+          transition: transform 0.15s, border-color 0.15s;
+          position: relative; overflow: hidden;
+        }
+        .media-card:hover { transform: translateY(-4px); }
+        .media-card:hover::after { content: '→ READ FEATURE'; position: absolute; bottom: 1rem; right: 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--red); letter-spacing: 0.1em; }
+        .media-card-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+        .media-card-year { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--yellow); letter-spacing: 0.12em; margin-bottom: 0.2rem; }
+        .media-card-genre { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+        .media-card-title { font-family: 'Special Elite', cursive; font-size: 1.2rem; line-height: 1.25; margin-bottom: 0.3rem; }
+        .media-card-author { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--grey); margin-bottom: 0.6rem; }
+        .media-card-desc { font-size: 0.85rem; color: #bbb; line-height: 1.65; font-weight: 300; }
+
         /* === PHOTOGRAPHERS === */
         .photographer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
         .photographer-card {
@@ -1743,6 +1910,8 @@ export default function PunkHub() {
                 { nav: "STORES", label: "Store Finder", icon: "📍", desc: "Find punk shops, thrift stores, and vintage spots anywhere in your area." },
                 { nav: "ARTICLES", label: "Articles", icon: "📋", desc: "Stories, essays, and deep dives into the culture. By punks, for punks." },
                 { nav: "CHRISTIAN PUNK", label: "Christian Punk", icon: "✝️", desc: "Faith meets fury. The bands who found God in the pit and brought the gospel to the stage." },
+                { nav: "GALLERY", label: "Gallery", icon: "📷", desc: "AI-generated punk imagery, iconic videos, legendary photographers, and online galleries." },
+                { nav: "MEDIA", label: "Books & Films", icon: "🎬", desc: "Essential punk books, films, short films, and documentaries. The culture in print and on screen." },
               ].map(item => (
                 <div key={item.nav} className="band-card" onClick={() => scrollToSection(item.nav)} style={{cursor:"pointer"}}>
                   <div style={{fontSize:"2rem", marginBottom:"0.5rem"}}>{item.icon}</div>
@@ -2152,6 +2321,81 @@ export default function PunkHub() {
           <div className="punk-divider"><span>// DOCUMENT YOUR SCENE //</span></div>
           <div className="manifesto">
             <p className="manifesto-text">Punk has always been documented by the people inside it. If you have photos, zines, or footage from local shows — share them. The archive belongs to the community.</p>
+          </div>
+        </div>
+      )}
+
+      {/* MEDIA */}
+      {activeSection === "MEDIA" && (
+        <div className="section-wrap">
+          {selectedMedia && (
+            <MediaReader item={selectedMedia} onClose={() => setSelectedMedia(null)} />
+          )}
+          <h2 className="section-title">Books & Films</h2>
+          <p className="section-sub">// PUNK CULTURE IN PRINT AND ON SCREEN — CLICK ANY CARD TO READ A FULL FEATURE //</p>
+
+          <div className="punk-divider"><span>// ESSENTIAL BOOKS //</span></div>
+          <div className="media-grid">
+            {PUNK_BOOKS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--white)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"book"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">{item.author}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// ESSENTIAL FILMS //</span></div>
+          <div className="media-grid">
+            {PUNK_FILMS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--red)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"film"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">Dir. {item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// SHORT FILMS //</span></div>
+          <div className="media-grid">
+            {PUNK_SHORT_FILMS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--grey)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"short film"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">{item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// DOCUMENTARIES //</span></div>
+          <div className="media-grid">
+            {PUNK_DOCUMENTARIES.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--yellow)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"documentary"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">Dir. {item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="manifesto">
+            <p className="manifesto-text">Punk was never just music. It was a way of seeing the world — and these books and films prove it. Read them. Watch them. Pass them on.</p>
           </div>
         </div>
       )}
