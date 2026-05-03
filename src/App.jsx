@@ -2421,4 +2421,3 @@ export default function PunkHub() {
                 <span className="new-music-emoji">{track.emoji}</span>
                 <div className="new-music-genre" style={{color:"var(--christian-gold)"}}>{track.genre}</div>
                 <div className="new-music-title">{track.title}</div>
-              </div>
