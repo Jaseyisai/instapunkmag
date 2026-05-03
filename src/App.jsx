@@ -2422,3 +2422,29 @@ export default function PunkHub() {
                 <div className="new-music-genre" style={{color:"var(--christian-gold)"}}>{track.genre}</div>
                 <div className="new-music-title">{track.title}</div>
               </div>
+    ))}
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="punk-footer">
+        <div className="footer-logo">INSTA <span style={{color:"#ff2020", textShadow:"0 0 16px rgba(255,32,32,0.5)"}}>PUNK</span> MAG</div>
+        <div className="footer-icons">
+          {["🎸", "✊", "Ⓐ", "📋", "✝️"].map((e, i) => <span key={i}>{e}</span>)}
+        </div>
+        <div className="footer-text">
+          THE COMPLETE PUNK CULTURE HUB<br />
+          FASHION · MUSIC · HISTORY · FAITH · COMMUNITY<br /><br />
+          <span style={{color:"#555"}}>Built with noise, static, and something to say. // Not for sale. Never for sale.</span>
+        </div>
+        <div className="kofi-wrap">
+          <p className="kofi-label">// LIKE WHAT WE'RE DOING? KEEP THE NOISE ALIVE //</p>
+          <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
+            ☕ BUY US A COFFEE ON KO-FI
+          </a>
+        </div>
+      </footer>
+    </div>
+  );
+}
