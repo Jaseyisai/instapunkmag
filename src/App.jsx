@@ -2444,7 +2444,8 @@ export default function PunkHub() {
           </a>
         </div>
       </footer>
- <PunkChatBot />
+
+      <PunkChatBot />
     </div>
   );
 }
