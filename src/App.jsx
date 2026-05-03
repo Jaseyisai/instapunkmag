@@ -3179,3 +3179,6 @@ export default function PunkHub() {
         </div>
       </footer>
       <PunkChatBot />
+ </div>
+  );
+}
