@@ -465,7 +465,7 @@ function PunkChatBot() {
     </>
   );
 }
-
+<PunkChatBot />
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
   const [imgSrc, setImgSrc] = useState(null);
