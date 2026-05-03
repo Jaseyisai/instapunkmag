@@ -344,6 +344,128 @@ const PUNK_PHOTO_GALLERIES = [
   { name: "CBGB Photo Archives", desc: "Images from the legendary New York venue that launched American punk. Artists, crowds, and chaos from the Bowery.", url: "https://www.gettyimages.com/search/2/image?phrase=cbgb+punk", emoji: "🏚️" },
 ];
 
+// Punk Chatbot Component
+function PunkChatBot() {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: "assistant", content: "Oi! I'm SID — your punk culture expert. Ask me anything about punk history, bands, subgenres, fashion, DIY, Christian punk, documentaries... whatever you want to know. 🤘" }
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (open && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, open]);
+
+  async function sendMessage() {
+    if (!input.trim() || loading) return;
+    const userMessage = { role: "user", content: input.trim() };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput("");
+    setLoading(true);
+
+    try {
+      // Only send role/content to API, exclude the greeting from history
+      const apiMessages = newMessages
+        .filter((m, i) => !(i === 0 && m.role === "assistant"))
+        .map(m => ({ role: m.role, content: m.content }));
+
+      const response = await fetch("/api/punk-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: apiMessages }),
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+      setMessages(prev => [...prev, { role: "assistant", content: data.response }]);
+    } catch (e) {
+      setMessages(prev => [...prev, { role: "assistant", content: "Something went wrong. Try again in a sec. ⚡" }]);
+    }
+    setLoading(false);
+  }
+
+  const SUGGESTIONS = [
+    "Best hardcore bands of the 80s?",
+    "What is straight edge?",
+    "Difference between Oi! and street punk?",
+    "Best punk documentaries?",
+    "Christian punk bands to know?",
+    "How do I build a battle jacket?",
+  ];
+
+  return (
+    <>
+      {/* Chat Window */}
+      {open && (
+        <div className="chat-window">
+          <div className="chat-header">
+            <div className="chat-header-info">
+              <div className="chat-avatar">S</div>
+              <div>
+                <div className="chat-name">SID</div>
+                <div className="chat-status">● Punk Culture Expert</div>
+              </div>
+            </div>
+            <button className="chat-close" onClick={() => setOpen(false)}>✕</button>
+          </div>
+
+          <div className="chat-messages">
+            {messages.map((msg, i) => (
+              <div key={i} className={`chat-msg ${msg.role === "user" ? "chat-msg-user" : "chat-msg-bot"}`}>
+                {msg.role === "assistant" && <div className="chat-msg-avatar">S</div>}
+                <div className="chat-msg-bubble">{msg.content}</div>
+              </div>
+            ))}
+            {loading && (
+              <div className="chat-msg chat-msg-bot">
+                <div className="chat-msg-avatar">S</div>
+                <div className="chat-msg-bubble chat-typing">
+                  <span /><span /><span />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {messages.length === 1 && (
+            <div className="chat-suggestions">
+              {SUGGESTIONS.map((s, i) => (
+                <button key={i} className="chat-suggestion" onClick={() => { setInput(s); }}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="chat-input-row">
+            <input
+              className="chat-input"
+              type="text"
+              placeholder="Ask SID anything about punk..."
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && sendMessage()}
+            />
+            <button className="chat-send" onClick={sendMessage} disabled={loading || !input.trim()}>
+              ▶
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Button */}
+      <button className={`chat-fab ${open ? "chat-fab-open" : ""}`} onClick={() => setOpen(o => !o)}>
+        {open ? "✕" : "🤘"}
+        {!open && <span className="chat-fab-label">ASK SID</span>}
+      </button>
+    </>
+  );
+}
+
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
   const [imgSrc, setImgSrc] = useState(null);
@@ -1554,6 +1676,115 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
+        /* === CHATBOT === */
+        .chat-fab {
+          position: fixed; bottom: 2rem; right: 2rem; z-index: 400;
+          background: var(--red); color: var(--white);
+          border: none; cursor: pointer;
+          display: flex; align-items: center; gap: 0.5rem;
+          padding: 0.85rem 1.2rem;
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 1.2rem;
+          box-shadow: 0 4px 20px rgba(204,0,0,0.5);
+          transition: all 0.2s;
+        }
+        .chat-fab:hover { background: var(--red-hot); transform: translateY(-2px); box-shadow: 0 6px 25px rgba(204,0,0,0.6); }
+        .chat-fab-open { padding: 0.85rem 1.1rem; }
+        .chat-fab-label { font-size: 0.7rem; letter-spacing: 0.12em; }
+
+        .chat-window {
+          position: fixed; bottom: 6rem; right: 2rem; z-index: 400;
+          width: 360px; max-width: calc(100vw - 2rem);
+          background: var(--off-black);
+          border: 1px solid var(--mid);
+          border-top: 3px solid var(--red);
+          box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+          display: flex; flex-direction: column;
+          max-height: 520px;
+        }
+
+        .chat-header {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0.85rem 1rem;
+          border-bottom: 1px solid var(--mid);
+          background: var(--dark);
+        }
+        .chat-header-info { display: flex; align-items: center; gap: 0.75rem; }
+        .chat-avatar {
+          width: 2.2rem; height: 2.2rem;
+          background: var(--red); color: var(--white);
+          font-family: 'Permanent Marker', cursive;
+          font-size: 1rem; display: flex; align-items: center; justify-content: center;
+        }
+        .chat-name { font-family: 'Special Elite', cursive; font-size: 1.1rem; }
+        .chat-status { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #6dca6d; letter-spacing: 0.08em; }
+        .chat-close { background: none; border: none; color: var(--grey); font-size: 1rem; cursor: pointer; padding: 0.25rem; transition: color 0.15s; }
+        .chat-close:hover { color: var(--white); }
+
+        .chat-messages {
+          flex: 1; overflow-y: auto; padding: 1rem;
+          display: flex; flex-direction: column; gap: 0.85rem;
+          scrollbar-width: thin; scrollbar-color: var(--mid) transparent;
+        }
+
+        .chat-msg { display: flex; gap: 0.5rem; align-items: flex-start; }
+        .chat-msg-user { flex-direction: row-reverse; }
+        .chat-msg-avatar {
+          width: 1.8rem; height: 1.8rem; flex-shrink: 0;
+          background: var(--red); color: var(--white);
+          font-family: 'Permanent Marker', cursive; font-size: 0.85rem;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .chat-msg-bubble {
+          max-width: 80%; padding: 0.65rem 0.9rem;
+          font-size: 0.87rem; line-height: 1.65; font-weight: 300;
+        }
+        .chat-msg-bot .chat-msg-bubble { background: var(--dark); border: 1px solid var(--mid); color: #ccc; }
+        .chat-msg-user .chat-msg-bubble { background: var(--red); color: var(--white); }
+
+        .chat-typing { display: flex; gap: 0.3rem; align-items: center; padding: 0.75rem 1rem; }
+        .chat-typing span {
+          width: 6px; height: 6px; background: var(--grey);
+          border-radius: 50%; animation: typing-bounce 1s ease-in-out infinite;
+        }
+        .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing-bounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-4px); opacity: 1; } }
+
+        .chat-suggestions {
+          padding: 0.5rem 1rem 0;
+          display: flex; flex-wrap: wrap; gap: 0.4rem;
+          border-top: 1px solid var(--mid);
+        }
+        .chat-suggestion {
+          background: none; border: 1px solid var(--mid);
+          color: var(--grey); padding: 0.3rem 0.6rem;
+          font-family: 'Share Tech Mono', monospace; font-size: 0.62rem;
+          letter-spacing: 0.05em; cursor: pointer;
+          transition: all 0.15s;
+        }
+        .chat-suggestion:hover { border-color: var(--red); color: var(--white); }
+
+        .chat-input-row {
+          display: flex; border-top: 1px solid var(--mid);
+          padding: 0.65rem;  gap: 0.5rem;
+        }
+        .chat-input {
+          flex: 1; background: var(--dark); border: 1px solid var(--mid);
+          color: var(--white); padding: 0.55rem 0.85rem;
+          font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;
+          outline: none; transition: border-color 0.15s;
+        }
+        .chat-input:focus { border-color: var(--red); }
+        .chat-input::placeholder { color: var(--grey); }
+        .chat-send {
+          background: var(--red); border: none; color: var(--white);
+          padding: 0.55rem 0.9rem; font-size: 0.9rem;
+          cursor: pointer; transition: background 0.15s;
+        }
+        .chat-send:hover:not(:disabled) { background: var(--red-hot); }
+        .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
         /* === MEDIA CARDS === */
         .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.1rem; margin-bottom: 2rem; }
         .media-card {
@@ -2190,234 +2421,3 @@ export default function PunkHub() {
                 <span className="new-music-emoji">{track.emoji}</span>
                 <div className="new-music-genre" style={{color:"var(--christian-gold)"}}>{track.genre}</div>
                 <div className="new-music-title">{track.title}</div>
-                <div className="new-music-desc">{track.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// FIND CHRISTIAN PUNK SHOWS NEAR YOU //</span></div>
-          <ChristianShowFinder />
-
-          <div className="christian-section" style={{marginTop:"2rem"}}>
-            <p className="christian-intro">
-              Christian punk is not a contradiction. Punk's core values — radical authenticity, community over commerce, rage at injustice, and care for the marginalized — map naturally onto a prophetic faith tradition.
-              From the hardcore stages of the late '80s to massive festival crowds in the 2000s, Christian punks have screamed their faith as loudly as their politics.
-              The pit can be sacred. The distortion can be a prayer. These bands proved it.
-            </p>
-
-            <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// KEY BANDS //</span></div>
-
-            <div className="christian-grid">
-              {CHRISTIAN_PUNK_BANDS.map((b, i) => (
-                <div key={i} className="christian-card">
-                  <div className="christian-band-name">{b.name}</div>
-                  <div className="christian-genre">{b.genre}</div>
-                  <div className="christian-note">{b.note}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// CORE VALUES //</span></div>
-
-            <div className="christian-values">
-              {["Radical Authenticity", "Care for the Outcast", "DIY Community", "Anti-Materialism", "Social Justice", "Raw Honesty in Worship", "Non-Conformity", "Grace Over Judgment"].map((v, i) => (
-                <div key={i} className="value-chip">{v}</div>
-              ))}
-            </div>
-          </div>
-
-          <div className="punk-divider"><span>// LABELS & COMMUNITY //</span></div>
-          <div className="band-grid">
-            {[
-              { title: "Tooth & Nail Records", desc: "Seattle-based Christian alternative label founded 1993. Home to Underoath, MxPx, Anberlin, Norma Jean, and dozens more. The Epitaph of Christian punk." },
-              { title: "Solid State Records", desc: "Tooth & Nail's heavier imprint. The Chariot, Demon Hunter, Haste the Day. Uncompromisingly brutal, explicitly Christian." },
-              { title: "Cornerstone Festival", desc: "Annual festival in Illinois (1984–2012) that was the heartbeat of the Christian alternative scene. Punk, metal, folk, and theology under one sky." },
-              { title: "The Warped Tour Factor", desc: "Christian punk bands regularly played Warped Tour alongside secular acts, proving the music could stand on its own merits in any company." },
-            ].map((t, i) => (
-              <div key={i} className="band-card" style={{borderTopColor:"var(--christian-gold)"}}>
-                <div className="band-name" style={{color:"var(--christian-gold)", marginBottom:"0.5rem"}}>{t.title}</div>
-                <div className="band-desc">{t.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="manifesto" style={{background:"var(--christian-purple)"}}>
-            <p className="manifesto-text">"We are not the ones the world has sanitized. We are the ones who show up to the show with our Bibles dog-eared, our jeans torn, and our voices raw. The gospel was never meant to be polite."</p>
-            <p className="manifesto-attr">— THE SPIRIT OF CHRISTIAN PUNK</p>
-          </div>
-        </div>
-      )}
-
-      {/* GALLERY */}
-      {activeSection === "GALLERY" && (
-        <div className="section-wrap">
-          <h2 className="section-title">Gallery</h2>
-          <p className="section-sub">// AI-GENERATED PUNK IMAGERY · UNIQUE EVERY VISIT //</p>
-
-          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.72rem", color:"var(--grey)", marginBottom:"1.5rem", letterSpacing:"0.08em"}}>
-            ⚡ Each image is generated fresh by AI on every page load — no two visits look the same.
-          </p>
-
-          <div className="gallery-grid">
-            {GALLERY_PROMPTS.map((item, i) => (
-              <GalleryImage
-                key={i}
-                prompt={item.prompt}
-                alt={item.alt}
-                span={i === 0 ? 2 : i === 4 ? 2 : null}
-              />
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// ICONIC VIDEOS //</span></div>
-          <div className="video-grid">
-            {[
-              { title: "The Clash — 'London Calling' (Official HD Video)", url: "https://www.youtube.com/watch?v=a3XqMtam1I0" },
-              { title: "Ramones — 'Blitzkrieg Bop' (Official Music Video)", url: "https://www.youtube.com/watch?v=268C3N2dDYk" },
-              { title: "Dead Kennedys — 'Holiday in Cambodia' (Official Video)", url: "https://www.youtube.com/watch?v=Qr6NOsluHYg" },
-              { title: "Bad Brains — 'Pay to Cum' Live at CBGB's 1979", url: "https://www.youtube.com/watch?v=OP_gUFvN3Mc" },
-              { title: "Bad Brains — 'Banned in D.C.' (Official)", url: "https://www.youtube.com/watch?v=221K0gSHBJc" },
-              { title: "Black Flag — 'Rise Above' (Official Video)", url: "https://www.youtube.com/watch?v=9TLHM-TCNWQ" },
-            ].map((v, i) => (
-              <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
-                <div className="video-embed">
-                  <div className="video-play">▶</div>
-                  <div className="video-title">{v.title}</div>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// LEGENDARY PUNK PHOTOGRAPHERS //</span></div>
-          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.75rem", color:"var(--grey)", marginBottom:"2rem", lineHeight:"1.7"}}>
-            Punk was always documented from the inside. These photographers weren't observers — they were part of the scene, camera in hand, capturing history as it happened.
-          </p>
-          <div className="photographer-grid">
-            {PUNK_PHOTOGRAPHERS.map((p, i) => (
-              <div key={i} className="photographer-card">
-                <span className="photographer-emoji">{p.emoji}</span>
-                <div className="photographer-name">{p.name}</div>
-                <div className="photographer-era">{p.era}</div>
-                <div className="photographer-known">Known for: {p.known}</div>
-                <p className="photographer-bio">{p.bio}</p>
-                <a href={p.gallery} target="_blank" rel="noopener noreferrer" className="photographer-link">
-                  → VIEW PHOTOGRAPHY
-                </a>
-              </div>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// ONLINE PUNK PHOTO GALLERIES //</span></div>
-          <div className="photo-gallery-grid">
-            {PUNK_PHOTO_GALLERIES.map((g, i) => (
-              <a key={i} href={g.url} target="_blank" rel="noopener noreferrer" className="photo-gallery-card">
-                <span className="photo-gallery-emoji">{g.emoji}</span>
-                <div className="photo-gallery-name">{g.name}</div>
-                <p className="photo-gallery-desc">{g.desc}</p>
-              </a>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// DOCUMENT YOUR SCENE //</span></div>
-          <div className="manifesto">
-            <p className="manifesto-text">Punk has always been documented by the people inside it. If you have photos, zines, or footage from local shows — share them. The archive belongs to the community.</p>
-          </div>
-        </div>
-      )}
-
-      {/* MEDIA */}
-      {activeSection === "MEDIA" && (
-        <div className="section-wrap">
-          {selectedMedia && (
-            <MediaReader item={selectedMedia} onClose={() => setSelectedMedia(null)} />
-          )}
-          <h2 className="section-title">Books & Films</h2>
-          <p className="section-sub">// PUNK CULTURE IN PRINT AND ON SCREEN — CLICK ANY CARD TO READ A FULL FEATURE //</p>
-
-          <div className="punk-divider"><span>// ESSENTIAL BOOKS //</span></div>
-          <div className="media-grid">
-            {PUNK_BOOKS.map((item, i) => (
-              <div key={i} className="media-card" style={{borderTopColor:"var(--white)"}}
-                onClick={() => setSelectedMedia({...item, mediaType:"book"})}>
-                <span className="media-card-emoji">{item.emoji}</span>
-                <div className="media-card-year">{item.year}</div>
-                <div className="media-card-genre">{item.genre}</div>
-                <div className="media-card-title">{item.title}</div>
-                <div className="media-card-author">{item.author}</div>
-                <div className="media-card-desc">{item.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// ESSENTIAL FILMS //</span></div>
-          <div className="media-grid">
-            {PUNK_FILMS.map((item, i) => (
-              <div key={i} className="media-card" style={{borderTopColor:"var(--red)"}}
-                onClick={() => setSelectedMedia({...item, mediaType:"film"})}>
-                <span className="media-card-emoji">{item.emoji}</span>
-                <div className="media-card-year">{item.year}</div>
-                <div className="media-card-genre">{item.genre}</div>
-                <div className="media-card-title">{item.title}</div>
-                <div className="media-card-author">Dir. {item.director}</div>
-                <div className="media-card-desc">{item.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// SHORT FILMS //</span></div>
-          <div className="media-grid">
-            {PUNK_SHORT_FILMS.map((item, i) => (
-              <div key={i} className="media-card" style={{borderTopColor:"var(--grey)"}}
-                onClick={() => setSelectedMedia({...item, mediaType:"short film"})}>
-                <span className="media-card-emoji">{item.emoji}</span>
-                <div className="media-card-year">{item.year}</div>
-                <div className="media-card-genre">{item.genre}</div>
-                <div className="media-card-title">{item.title}</div>
-                <div className="media-card-author">{item.director}</div>
-                <div className="media-card-desc">{item.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// DOCUMENTARIES //</span></div>
-          <div className="media-grid">
-            {PUNK_DOCUMENTARIES.map((item, i) => (
-              <div key={i} className="media-card" style={{borderTopColor:"var(--yellow)"}}
-                onClick={() => setSelectedMedia({...item, mediaType:"documentary"})}>
-                <span className="media-card-emoji">{item.emoji}</span>
-                <div className="media-card-year">{item.year}</div>
-                <div className="media-card-genre">{item.genre}</div>
-                <div className="media-card-title">{item.title}</div>
-                <div className="media-card-author">Dir. {item.director}</div>
-                <div className="media-card-desc">{item.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="manifesto">
-            <p className="manifesto-text">Punk was never just music. It was a way of seeing the world — and these books and films prove it. Read them. Watch them. Pass them on.</p>
-          </div>
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <footer className="punk-footer">
-        <div className="footer-logo">INSTA <span style={{color:"#ff2020", textShadow:"0 0 16px rgba(255,32,32,0.5)"}}>PUNK</span> MAG</div>
-        <div className="footer-icons">
-          {["🎸", "✊", "Ⓐ", "📋", "✝️"].map((e, i) => <span key={i}>{e}</span>)}
-        </div>
-        <div className="footer-text">
-          THE COMPLETE PUNK CULTURE HUB<br />
-          FASHION · MUSIC · HISTORY · FAITH · COMMUNITY<br /><br />
-          <span style={{color:"#555"}}>Built with noise, static, and something to say. // Not for sale. Never for sale.</span>
-        </div>
-        <div className="kofi-wrap">
-          <p className="kofi-label">// LIKE WHAT WE'RE DOING? KEEP THE NOISE ALIVE //</p>
-          <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">
-            ☕ BUY US A COFFEE ON KO-FI
-          </a>
-        </div>
-      </footer>
-    </div>
-  );
-}
