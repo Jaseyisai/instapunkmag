@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "CHRISTIAN PUNK", "GALLERY", "MEDIA"];
+const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
 
 const PUNK_BANDS = [
   { name: "The Clash", era: "1976–1986", origin: "London, UK", genre: "Punk Rock / Post-Punk", desc: "One of the most influential punk bands ever, blending punk with reggae, ska, and rockabilly." },
@@ -465,6 +465,7 @@ function PunkChatBot() {
     </>
   );
 }
+
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
   const [imgSrc, setImgSrc] = useState(null);
@@ -520,8 +521,6 @@ function GalleryImage({ prompt, alt, span }) {
     </div>
   );
 }
-
-// DIY Workshop Component
 function DIYWorkshop() {
   const [openCard, setOpenCard] = useState(null);
   const [filter, setFilter] = useState("ALL");
@@ -1675,7 +1674,217 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
-        /* === CHATBOT === */
+        /* === MEET SID PAGE === */
+        .sid-page { padding-bottom: 2rem; }
+
+        .sid-hero {
+          display: grid; grid-template-columns: 280px 1fr; gap: 3rem;
+          align-items: center; margin-bottom: 3rem;
+        }
+        @media (max-width: 700px) { .sid-hero { grid-template-columns: 1fr; justify-items: center; } }
+
+        /* === SID ROBOT === */
+        .sid-robot {
+          display: flex; flex-direction: column; align-items: center;
+          position: relative; animation: sid-bob 3s ease-in-out infinite;
+          filter: drop-shadow(0 0 20px rgba(204,0,0,0.4));
+        }
+        @keyframes sid-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        .sid-robot-antenna {
+          width: 4px; height: 30px; background: var(--grey);
+          margin-bottom: -2px; position: relative;
+        }
+        .sid-antenna-ball {
+          width: 12px; height: 12px; background: var(--red);
+          border-radius: 50%; position: absolute; top: -6px; left: -4px;
+          animation: sid-blink-antenna 1.5s ease-in-out infinite;
+          box-shadow: 0 0 8px var(--red);
+        }
+        @keyframes sid-blink-antenna { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+        .sid-mohawk {
+          position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+          display: flex; gap: 3px; align-items: flex-end;
+        }
+        .sid-spike {
+          width: 8px; background: var(--red);
+          border-radius: 4px 4px 0 0;
+          animation: sid-spike-pulse 2s ease-in-out infinite alternate;
+        }
+        .sid-spike:nth-child(1), .sid-spike:nth-child(5) { height: 16px; }
+        .sid-spike:nth-child(2), .sid-spike:nth-child(4) { height: 24px; }
+        .sid-spike:nth-child(3) { height: 30px; }
+        @keyframes sid-spike-pulse { from { opacity: 0.7; } to { opacity: 1; filter: drop-shadow(0 0 4px var(--red)); } }
+
+        .sid-robot-head {
+          width: 120px; height: 100px;
+          background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+          border: 3px solid var(--mid);
+          border-radius: 8px;
+          position: relative; display: flex;
+          flex-direction: column; align-items: center; justify-content: center;
+          gap: 8px;
+        }
+
+        .sid-robot-eyes { display: flex; gap: 16px; }
+        .sid-eye {
+          width: 28px; height: 28px;
+          background: #000; border: 2px solid var(--grey);
+          border-radius: 4px; display: flex; align-items: center; justify-content: center;
+          overflow: hidden;
+        }
+        .sid-pupil {
+          width: 12px; height: 16px; background: var(--red);
+          border-radius: 2px;
+          animation: sid-eye-move 4s ease-in-out infinite;
+        }
+        @keyframes sid-eye-move { 0%,40%,100% { transform: translateX(0); } 20% { transform: translateX(-4px); } 60% { transform: translateX(4px); } }
+
+        .sid-robot-mouth {
+          width: 70px; height: 16px;
+          background: #000; border: 2px solid var(--grey);
+          border-radius: 2px; overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .sid-mouth-teeth { display: flex; gap: 2px; }
+        .sid-tooth { width: 7px; height: 10px; background: var(--white); border-radius: 0 0 2px 2px; }
+
+        .sid-safety-pin {
+          position: absolute; top: 8px; right: 8px;
+          width: 3px; height: 16px; background: var(--grey);
+          border-radius: 2px;
+        }
+        .sid-safety-pin::before {
+          content: ''; position: absolute; top: -4px; left: -3px;
+          width: 8px; height: 8px; border: 2px solid var(--grey);
+          border-radius: 50%;
+        }
+
+        .sid-robot-body {
+          width: 140px; height: 120px;
+          background: linear-gradient(135deg, #222, #111);
+          border: 3px solid var(--mid);
+          border-radius: 6px; margin-top: 4px;
+          position: relative; display: flex;
+          flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .sid-chest-panel {
+          display: flex; gap: 8px; align-items: center;
+        }
+        .sid-chest-light {
+          width: 12px; height: 12px; border-radius: 50%;
+          border: 2px solid var(--mid);
+        }
+        .sid-light-1 { background: var(--red); animation: sid-light-blink 1.2s ease-in-out infinite; box-shadow: 0 0 6px var(--red); }
+        .sid-light-2 { background: var(--yellow); animation: sid-light-blink 1.2s ease-in-out infinite 0.4s; box-shadow: 0 0 6px var(--yellow); }
+        .sid-light-3 { background: #4caf50; animation: sid-light-blink 1.2s ease-in-out infinite 0.8s; box-shadow: 0 0 6px #4caf50; }
+        @keyframes sid-light-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .sid-chest-badge {
+          font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+          color: var(--red); letter-spacing: 0.2em;
+          border: 1px solid var(--red); padding: 0.2rem 0.5rem;
+        }
+
+        .sid-studs {
+          display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;
+          width: 80px;
+        }
+        .sid-stud {
+          width: 8px; height: 8px; background: var(--grey);
+          transform: rotate(45deg);
+        }
+
+        .sid-robot-arms {
+          display: flex; justify-content: space-between;
+          width: 180px; margin-top: -80px; position: relative; z-index: -1;
+        }
+        .sid-arm {
+          width: 24px; height: 70px;
+          background: linear-gradient(135deg, #222, #111);
+          border: 2px solid var(--mid); border-radius: 4px;
+        }
+        .sid-arm-left { border-radius: 4px 4px 4px 12px; }
+        .sid-arm-right { border-radius: 4px 4px 12px 4px; }
+        .sid-hand { font-size: 1.2rem; text-align: center; margin-top: 48px; }
+
+        .sid-robot-legs {
+          display: flex; gap: 12px; margin-top: 4px;
+        }
+        .sid-leg {
+          width: 36px; height: 50px;
+          background: linear-gradient(135deg, #222, #111);
+          border: 2px solid var(--mid); border-radius: 4px;
+        }
+        .sid-boot {
+          width: 44px; height: 18px;
+          background: #111; border: 2px solid var(--grey);
+          border-radius: 0 4px 4px 0; margin-top: 32px; margin-left: -4px;
+        }
+
+        /* === SID INTRO === */
+        .sid-intro-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey); letter-spacing: 0.2em; margin-bottom: 0.75rem; }
+        .sid-intro-name {
+          font-family: 'Permanent Marker', cursive;
+          font-size: clamp(3.5rem, 8vw, 6rem);
+          color: var(--white); line-height: 1;
+          text-shadow: 4px 4px 0 var(--red);
+        }
+        .sid-intro-name span { color: var(--red); }
+        .sid-intro-full { font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: var(--yellow); letter-spacing: 0.2em; text-transform: uppercase; margin: 0.5rem 0 1.25rem; }
+        .sid-intro-bio { font-size: 1rem; color: #ccc; line-height: 1.8; font-weight: 300; margin-bottom: 1.5rem; max-width: 520px; }
+
+        .sid-launch-btn {
+          background: var(--red); color: var(--white); border: none;
+          font-family: 'Share Tech Mono', monospace; font-size: 0.85rem;
+          letter-spacing: 0.15em; padding: 0.9rem 2rem;
+          cursor: pointer; transition: all 0.15s;
+          display: inline-block;
+        }
+        .sid-launch-btn:hover { background: var(--red-hot); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--yellow); }
+        .sid-launch-btn-big { font-size: 1rem; padding: 1.1rem 3rem; }
+
+        /* === SID KNOWLEDGE === */
+        .sid-knowledge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.85rem; margin-bottom: 2rem; }
+        .sid-knowledge-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          border-top: 3px solid var(--red);
+          padding: 1.2rem; transition: transform 0.15s;
+        }
+        .sid-knowledge-card:hover { transform: translateY(-3px); }
+        .sid-knowledge-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .sid-knowledge-title { font-family: 'Special Elite', cursive; font-size: 1.05rem; margin-bottom: 0.4rem; }
+        .sid-knowledge-desc { font-size: 0.82rem; color: #aaa; line-height: 1.6; font-weight: 300; }
+
+        /* === SID QUESTIONS === */
+        .sid-questions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.6rem; margin-bottom: 2rem; }
+        .sid-question-chip {
+          background: var(--dark); border: 1px solid var(--mid);
+          padding: 0.75rem 1rem; cursor: pointer;
+          font-size: 0.85rem; color: #ccc; line-height: 1.5;
+          transition: all 0.15s; display: flex; gap: 0.5rem; align-items: flex-start;
+        }
+        .sid-question-chip:hover { border-color: var(--red); color: var(--white); background: #1f1f1f; }
+        .sid-q-arrow { color: var(--red); flex-shrink: 0; font-family: 'Share Tech Mono', monospace; }
+
+        /* === SID ORIGIN === */
+        .sid-origin { display: grid; grid-template-columns: 1fr 280px; gap: 2rem; margin-bottom: 2rem; }
+        @media (max-width: 700px) { .sid-origin { grid-template-columns: 1fr; } }
+        .sid-origin-text p { font-size: 0.95rem; color: #ccc; line-height: 1.8; font-weight: 300; margin-bottom: 1rem; }
+        .sid-origin-text strong { color: var(--white); font-weight: 600; }
+        .sid-origin-facts { background: var(--dark); border: 1px solid var(--mid); border-top: 3px solid var(--grey); padding: 1.2rem; align-self: start; }
+        .sid-fact-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--grey); letter-spacing: 0.15em; margin-bottom: 0.75rem; display: block; }
+        .sid-fact-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; border-bottom: 1px solid var(--mid); font-size: 0.8rem; }
+        .sid-fact-label-item { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--grey); white-space: nowrap; }
+        .sid-fact-val { color: #ccc; text-align: right; font-size: 0.8rem; }
+
+        /* === SID CTA === */
+        .sid-cta-block { text-align: center; padding: 3rem; border: 2px dashed var(--mid); margin-top: 2rem; }
+        .sid-cta-text { font-family: 'Special Elite', cursive; font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 1.5rem; }
+
+        /* === MEET SID NAV CARD === */
         .chat-fab {
           position: fixed; bottom: 2rem; right: 2rem; z-index: 400;
           background: var(--red); color: var(--white);
@@ -2142,6 +2351,7 @@ export default function PunkHub() {
                 { nav: "CHRISTIAN PUNK", label: "Christian Punk", icon: "✝️", desc: "Faith meets fury. The bands who found God in the pit and brought the gospel to the stage." },
                 { nav: "GALLERY", label: "Gallery", icon: "📷", desc: "AI-generated punk imagery, iconic videos, legendary photographers, and online galleries." },
                 { nav: "MEDIA", label: "Books & Films", icon: "🎬", desc: "Essential punk books, films, short films, and documentaries. The culture in print and on screen." },
+                { nav: "MEET SID", label: "Meet SID", icon: "🤖", desc: "Meet SID — your AI punk culture expert. Ask anything about punk history, music, fashion, and more." },
               ].map(item => (
                 <div key={item.nav} className="band-card" onClick={() => scrollToSection(item.nav)} style={{cursor:"pointer"}}>
                   <div style={{fontSize:"2rem", marginBottom:"0.5rem"}}>{item.icon}</div>
@@ -2420,8 +2630,532 @@ export default function PunkHub() {
                 <span className="new-music-emoji">{track.emoji}</span>
                 <div className="new-music-genre" style={{color:"var(--christian-gold)"}}>{track.genre}</div>
                 <div className="new-music-title">{track.title}</div>
+                <div className="new-music-desc">{track.desc}</div>
               </div>
-    ))}
+            ))}
+          </div>
+
+          <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// FIND CHRISTIAN PUNK SHOWS NEAR YOU //</span></div>
+          <ChristianShowFinder />
+
+          <div className="christian-section" style={{marginTop:"2rem"}}>
+            <p className="christian-intro">
+              Christian punk is not a contradiction. Punk's core values — radical authenticity, community over commerce, rage at injustice, and care for the marginalized — map naturally onto a prophetic faith tradition.
+              From the hardcore stages of the late '80s to massive festival crowds in the 2000s, Christian punks have screamed their faith as loudly as their politics.
+              The pit can be sacred. The distortion can be a prayer. These bands proved it.
+            </p>
+
+            <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// KEY BANDS //</span></div>
+
+            <div className="christian-grid">
+              {CHRISTIAN_PUNK_BANDS.map((b, i) => (
+                <div key={i} className="christian-card">
+                  <div className="christian-band-name">{b.name}</div>
+                  <div className="christian-genre">{b.genre}</div>
+                  <div className="christian-note">{b.note}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// CORE VALUES //</span></div>
+
+            <div className="christian-values">
+              {["Radical Authenticity", "Care for the Outcast", "DIY Community", "Anti-Materialism", "Social Justice", "Raw Honesty in Worship", "Non-Conformity", "Grace Over Judgment"].map((v, i) => (
+                <div key={i} className="value-chip">{v}</div>
+              ))}
+            </div>
+          </div>
+
+          <div className="punk-divider"><span>// LABELS & COMMUNITY //</span></div>
+          <div className="band-grid">
+            {[
+              { title: "Tooth & Nail Records", desc: "Seattle-based Christian alternative label founded 1993. Home to Underoath, MxPx, Anberlin, Norma Jean, and dozens more. The Epitaph of Christian punk." },
+              { title: "Solid State Records", desc: "Tooth & Nail's heavier imprint. The Chariot, Demon Hunter, Haste the Day. Uncompromisingly brutal, explicitly Christian." },
+              { title: "Cornerstone Festival", desc: "Annual festival in Illinois (1984–2012) that was the heartbeat of the Christian alternative scene. Punk, metal, folk, and theology under one sky." },
+              { title: "The Warped Tour Factor", desc: "Christian punk bands regularly played Warped Tour alongside secular acts, proving the music could stand on its own merits in any company." },
+            ].map((t, i) => (
+              <div key={i} className="band-card" style={{borderTopColor:"var(--christian-gold)"}}>
+                <div className="band-name" style={{color:"var(--christian-gold)", marginBottom:"0.5rem"}}>{t.title}</div>
+                <div className="band-desc">{t.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="manifesto" style={{background:"var(--christian-purple)"}}>
+            <p className="manifesto-text">"We are not the ones the world has sanitized. We are the ones who show up to the show with our Bibles dog-eared, our jeans torn, and our voices raw. The gospel was never meant to be polite."</p>
+            <p className="manifesto-attr">— THE SPIRIT OF CHRISTIAN PUNK</p>
+          </div>
+        </div>
+      )}
+
+      {/* GALLERY */}
+      {activeSection === "GALLERY" && (
+        <div className="section-wrap">
+          <h2 className="section-title">Gallery</h2>
+          <p className="section-sub">// AI-GENERATED PUNK IMAGERY · UNIQUE EVERY VISIT //</p>
+
+          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.72rem", color:"var(--grey)", marginBottom:"1.5rem", letterSpacing:"0.08em"}}>
+            ⚡ Each image is generated fresh by AI on every page load — no two visits look the same.
+          </p>
+
+          <div className="gallery-grid">
+            {GALLERY_PROMPTS.map((item, i) => (
+              <GalleryImage
+                key={i}
+                prompt={item.prompt}
+                alt={item.alt}
+                span={i === 0 ? 2 : i === 4 ? 2 : null}
+              />
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// ICONIC VIDEOS //</span></div>
+          <div className="video-grid">
+            {[
+              { title: "The Clash — 'London Calling' (Official HD Video)", url: "https://www.youtube.com/watch?v=a3XqMtam1I0" },
+              { title: "Ramones — 'Blitzkrieg Bop' (Official Music Video)", url: "https://www.youtube.com/watch?v=268C3N2dDYk" },
+              { title: "Dead Kennedys — 'Holiday in Cambodia' (Official Video)", url: "https://www.youtube.com/watch?v=Qr6NOsluHYg" },
+              { title: "Bad Brains — 'Pay to Cum' Live at CBGB's 1979", url: "https://www.youtube.com/watch?v=OP_gUFvN3Mc" },
+              { title: "Bad Brains — 'Banned in D.C.' (Official)", url: "https://www.youtube.com/watch?v=221K0gSHBJc" },
+              { title: "Black Flag — 'Rise Above' (Official Video)", url: "https://www.youtube.com/watch?v=9TLHM-TCNWQ" },
+            ].map((v, i) => (
+              <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+                <div className="video-embed">
+                  <div className="video-play">▶</div>
+                  <div className="video-title">{v.title}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// LEGENDARY PUNK PHOTOGRAPHERS //</span></div>
+          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.75rem", color:"var(--grey)", marginBottom:"2rem", lineHeight:"1.7"}}>
+            Punk was always documented from the inside. These photographers weren't observers — they were part of the scene, camera in hand, capturing history as it happened.
+          </p>
+          <div className="photographer-grid">
+            {PUNK_PHOTOGRAPHERS.map((p, i) => (
+              <div key={i} className="photographer-card">
+                <span className="photographer-emoji">{p.emoji}</span>
+                <div className="photographer-name">{p.name}</div>
+                <div className="photographer-era">{p.era}</div>
+                <div className="photographer-known">Known for: {p.known}</div>
+                <p className="photographer-bio">{p.bio}</p>
+                <a href={p.gallery} target="_blank" rel="noopener noreferrer" className="photographer-link">
+                  → VIEW PHOTOGRAPHY
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// ONLINE PUNK PHOTO GALLERIES //</span></div>
+          <div className="photo-gallery-grid">
+            {PUNK_PHOTO_GALLERIES.map((g, i) => (
+              <a key={i} href={g.url} target="_blank" rel="noopener noreferrer" className="photo-gallery-card">
+                <span className="photo-gallery-emoji">{g.emoji}</span>
+                <div className="photo-gallery-name">{g.name}</div>
+                <p className="photo-gallery-desc">{g.desc}</p>
+              </a>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// DOCUMENT YOUR SCENE //</span></div>
+          <div className="manifesto">
+            <p className="manifesto-text">Punk has always been documented by the people inside it. If you have photos, zines, or footage from local shows — share them. The archive belongs to the community.</p>
+          </div>
+        </div>
+      )}
+
+      {/* MEDIA */}
+      {activeSection === "MEDIA" && (
+        <div className="section-wrap">
+          {selectedMedia && (
+            <MediaReader item={selectedMedia} onClose={() => setSelectedMedia(null)} />
+          )}
+          <h2 className="section-title">Books & Films</h2>
+          <p className="section-sub">// PUNK CULTURE IN PRINT AND ON SCREEN — CLICK ANY CARD TO READ A FULL FEATURE //</p>
+
+          <div className="punk-divider"><span>// ESSENTIAL BOOKS //</span></div>
+          <div className="media-grid">
+            {PUNK_BOOKS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--white)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"book"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">{item.author}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// ESSENTIAL FILMS //</span></div>
+          <div className="media-grid">
+            {PUNK_FILMS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--red)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"film"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">Dir. {item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// SHORT FILMS //</span></div>
+          <div className="media-grid">
+            {PUNK_SHORT_FILMS.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--grey)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"short film"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">{item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// DOCUMENTARIES //</span></div>
+          <div className="media-grid">
+            {PUNK_DOCUMENTARIES.map((item, i) => (
+              <div key={i} className="media-card" style={{borderTopColor:"var(--yellow)"}}
+                onClick={() => setSelectedMedia({...item, mediaType:"documentary"})}>
+                <span className="media-card-emoji">{item.emoji}</span>
+                <div className="media-card-year">{item.year}</div>
+                <div className="media-card-genre">{item.genre}</div>
+                <div className="media-card-title">{item.title}</div>
+                <div className="media-card-author">Dir. {item.director}</div>
+                <div className="media-card-desc">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="manifesto">
+            <p className="manifesto-text">Punk was never just music. It was a way of seeing the world — and these books and films prove it. Read them. Watch them. Pass them on.</p>
+          </div>
+        </div>
+      )}
+
+      {/* MEET SID */}
+      {activeSection === "MEET SID" && (
+        <div className="section-wrap">
+          <div className="sid-page">
+
+            {/* Robot mascot + intro */}
+            <div className="sid-hero">
+              <div className="sid-robot">
+                <div className="sid-robot-antenna">
+                  <div className="sid-antenna-ball" />
+                </div>
+                <div className="sid-robot-head">
+                  <div className="sid-robot-eyes">
+                    <div className="sid-eye sid-eye-left"><div className="sid-pupil" /></div>
+                    <div className="sid-eye sid-eye-right"><div className="sid-pupil" /></div>
+                  </div>
+                  <div className="sid-robot-mouth">
+                    <div className="sid-mouth-teeth">
+                      {[...Array(6)].map((_, i) => <div key={i} className="sid-tooth" />)}
+                    </div>
+                  </div>
+                  <div className="sid-mohawk">
+                    {[...Array(5)].map((_, i) => <div key={i} className="sid-spike" style={{animationDelay:`${i*0.15}s`}} />)}
+                  </div>
+                  <div className="sid-safety-pin" />
+                </div>
+                <div className="sid-robot-body">
+                  <div className="sid-chest-panel">
+                    <div className="sid-chest-light sid-light-1" />
+                    <div className="sid-chest-light sid-light-2" />
+                    <div className="sid-chest-light sid-light-3" />
+                  </div>
+                  <div className="sid-chest-badge">S.I.D</div>
+                  <div className="sid-studs">
+                    {[...Array(8)].map((_, i) => <div key={i} className="sid-stud" />)}
+                  </div>
+                </div>
+                <div className="sid-robot-arms">
+                  <div className="sid-arm sid-arm-left">
+                    <div className="sid-hand">🤘</div>
+                  </div>
+                  <div className="sid-arm sid-arm-right">
+                    <div className="sid-hand">🤘</div>
+                  </div>
+                </div>
+                <div className="sid-robot-legs">
+                  <div className="sid-leg sid-leg-left">
+                    <div className="sid-boot" />
+                  </div>
+                  <div className="sid-leg sid-leg-right">
+                    <div className="sid-boot" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sid-intro">
+                <div className="sid-intro-tag">// MEET YOUR PUNK CULTURE EXPERT //</div>
+                <h1 className="sid-intro-name">S<span>.</span>I<span>.</span>D<span>.</span></h1>
+                <p className="sid-intro-full">Scene Intelligence Database</p>
+                <p className="sid-intro-bio">
+                  Oi. I'm SID — a punk-obsessed AI built to answer every question you've ever had about the scene. 
+                  Named after the one and only Sid Vicious, I've got everything he didn't — knowledge, context, 
+                  and the ability to actually play bass. I live on Insta Punk Mag to make sure no punk question 
+                  goes unanswered. Ask me anything. I don't bite. Much. 🤘
+                </p>
+                <button className="sid-launch-btn" onClick={() => {
+                  document.querySelector('.chat-fab')?.click();
+                }}>
+                  ⚡ LAUNCH CHAT WITH SID
+                </button>
+              </div>
+            </div>
+
+            {/* What SID knows */}
+            <div className="punk-divider"><span>// WHAT SID KNOWS //</span></div>
+            <div className="sid-knowledge-grid">
+              {[
+                { icon: "🎸", title: "Every Punk Subgenre", desc: "Proto-punk to post-hardcore, Oi! to anarcho, ska punk to crust — if it's got distortion and attitude, SID knows it." },
+                { icon: "📜", title: "Punk History", desc: "CBGB to the Roxy, the Ramones to Refused. SID can trace the full timeline of punk from 1974 to right now." },
+                { icon: "✝️", title: "Christian Punk", desc: "Underoath, MxPx, The Chariot, Norma Jean — SID knows the faith and the fury of Christian punk inside out." },
+                { icon: "👢", title: "Fashion & DIY", desc: "Dr. Martens, battle jackets, mohawks, safety pins. SID knows how to look dangerous on any budget." },
+                { icon: "📋", title: "Zines & Culture", desc: "From Sniffin' Glue to Riot Grrrl press — the underground print culture that punk built." },
+                { icon: "🌍", title: "Global Punk Scenes", desc: "Indonesia, Brazil, Nigeria, Japan — punk is everywhere and SID knows the local scenes worldwide." },
+                { icon: "🎥", title: "Films & Books", desc: "Every essential punk documentary, film, and book. SID can build your entire punk education watchlist." },
+                { icon: "✊", title: "Punk Politics", desc: "Straight edge, anarchism, feminism, anti-racism — the politics that punk was built on." },
+              ].map((item, i) => (
+                <div key={i} className="sid-knowledge-card">
+                  <div className="sid-knowledge-icon">{item.icon}</div>
+                  <div className="sid-knowledge-title">{item.title}</div>
+                  <div className="sid-knowledge-desc">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Example questions */}
+            <div className="punk-divider"><span>// THINGS TO ASK SID //</span></div>
+            <div className="sid-questions-grid">
+              {[
+                "What's the difference between hardcore punk and metalcore?",
+                "Which Sex Pistols album should I start with?",
+                "How do I build a battle jacket from scratch?",
+                "What is straight edge and where did it come from?",
+                "Best Christian punk bands for someone new to the scene?",
+                "What happened at the CBGB venue?",
+                "Which punk documentaries should I watch first?",
+                "What makes Oi! punk different from street punk?",
+                "Who were the most important women in punk history?",
+                "What is anarcho-punk and what do they believe?",
+                "Best punk scenes outside the US and UK?",
+                "How did punk influence fashion in the 1970s?",
+              ].map((q, i) => (
+                <div key={i} className="sid-question-chip" onClick={() => {
+                  document.querySelector('.chat-fab')?.click();
+                  setTimeout(() => {
+                    const input = document.querySelector('.chat-input');
+                    if (input) { input.value = q; input.dispatchEvent(new Event('input', { bubbles: true })); }
+                  }, 300);
+                }}>
+                  <span className="sid-q-arrow">→</span> {q}
+                </div>
+              ))}
+            </div>
+
+            {/* Origin story */}
+            <div className="punk-divider"><span>// THE SID VICIOUS CONNECTION //</span></div>
+            <div className="sid-origin">
+              <div className="sid-origin-text">
+                <p>SID is named after <strong>Sid Vicious</strong> — born John Simon Ritchie, bassist for the Sex Pistols, and one of punk's most iconic and tragic figures. Sid couldn't really play bass. He didn't care. And somehow that made him more punk than anyone around him.</p>
+                <p>There's an irony in naming an all-knowing AI after the guy who famously knew nothing about music theory. SID the chatbot is the anti-Sid — all the attitude, all the knowledge, none of the chaos. Sid Vicious would probably hate it. Which makes it perfect.</p>
+                <p>SID stands for <strong>Scene Intelligence Database</strong> — but the Vicious reference is the one that counts. 🤘</p>
+              </div>
+              <div className="sid-origin-facts">
+                <div className="sid-fact-label">// SID VICIOUS //</div>
+                {[
+                  { label: "Born", val: "May 10, 1957 — London" },
+                  { label: "Died", val: "February 2, 1979 — New York" },
+                  { label: "Band", val: "Sex Pistols (1977–1978)" },
+                  { label: "Real Name", val: "John Simon Ritchie" },
+                  { label: "Known For", val: "Never Mind the Bollocks, chaos, the look" },
+                  { label: "Legacy", val: "The visual face of UK punk forever" },
+                ].map((f, i) => (
+                  <div key={i} className="sid-fact-row">
+                    <span className="sid-fact-label-item">{f.label}</span>
+                    <span className="sid-fact-val">{f.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Big CTA */}
+            <div className="sid-cta-block">
+              <div className="sid-cta-text">Ready to talk punk?</div>
+              <button className="sid-launch-btn sid-launch-btn-big" onClick={() => {
+                document.querySelector('.chat-fab')?.click();
+              }}>
+                ⚡ START CHATTING WITH SID
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* MEET SID */}
+      {activeSection === "MEET SID" && (
+        <div className="section-wrap">
+          <div className="sid-page">
+
+            <div className="sid-hero">
+              <div className="sid-robot">
+                <div className="sid-robot-antenna">
+                  <div className="sid-antenna-ball" />
+                </div>
+                <div className="sid-robot-head">
+                  <div className="sid-mohawk">
+                    {[...Array(5)].map((_, i) => <div key={i} className="sid-spike" style={{animationDelay:`${i*0.15}s`}} />)}
+                  </div>
+                  <div className="sid-robot-eyes">
+                    <div className="sid-eye sid-eye-left"><div className="sid-pupil" /></div>
+                    <div className="sid-eye sid-eye-right"><div className="sid-pupil" /></div>
+                  </div>
+                  <div className="sid-robot-mouth">
+                    <div className="sid-mouth-teeth">
+                      {[...Array(6)].map((_, i) => <div key={i} className="sid-tooth" />)}
+                    </div>
+                  </div>
+                  <div className="sid-safety-pin" />
+                </div>
+                <div className="sid-robot-body">
+                  <div className="sid-chest-panel">
+                    <div className="sid-chest-light sid-light-1" />
+                    <div className="sid-chest-light sid-light-2" />
+                    <div className="sid-chest-light sid-light-3" />
+                  </div>
+                  <div className="sid-chest-badge">S.I.D</div>
+                  <div className="sid-studs">
+                    {[...Array(8)].map((_, i) => <div key={i} className="sid-stud" />)}
+                  </div>
+                </div>
+                <div className="sid-robot-arms">
+                  <div className="sid-arm sid-arm-left">
+                    <div className="sid-hand">🤘</div>
+                  </div>
+                  <div className="sid-arm sid-arm-right">
+                    <div className="sid-hand">🤘</div>
+                  </div>
+                </div>
+                <div className="sid-robot-legs">
+                  <div className="sid-leg sid-leg-left">
+                    <div className="sid-boot" />
+                  </div>
+                  <div className="sid-leg sid-leg-right">
+                    <div className="sid-boot" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sid-intro">
+                <div className="sid-intro-tag">// MEET YOUR PUNK CULTURE EXPERT //</div>
+                <h1 className="sid-intro-name">S<span>.</span>I<span>.</span>D<span>.</span></h1>
+                <p className="sid-intro-full">Scene Intelligence Database</p>
+                <p className="sid-intro-bio">
+                  Oi. I'm SID — a punk-obsessed AI built to answer every question you've ever had about the scene.
+                  Named after the one and only Sid Vicious, I've got everything he didn't — knowledge, context,
+                  and the ability to actually play bass. I live on Insta Punk Mag to make sure no punk question
+                  goes unanswered. Ask me anything. I don't bite. Much. 🤘
+                </p>
+                <button className="sid-launch-btn" onClick={() => document.querySelector('.chat-fab')?.click()}>
+                  ⚡ LAUNCH CHAT WITH SID
+                </button>
+              </div>
+            </div>
+
+            <div className="punk-divider"><span>// WHAT SID KNOWS //</span></div>
+            <div className="sid-knowledge-grid">
+              {[
+                { icon: "🎸", title: "Every Punk Subgenre", desc: "Proto-punk to post-hardcore, Oi! to anarcho, ska punk to crust — if it's got distortion and attitude, SID knows it." },
+                { icon: "📜", title: "Punk History", desc: "CBGB to the Roxy, the Ramones to Refused. SID can trace the full timeline of punk from 1974 to right now." },
+                { icon: "✝️", title: "Christian Punk", desc: "Underoath, MxPx, The Chariot, Norma Jean — SID knows the faith and the fury of Christian punk inside out." },
+                { icon: "👢", title: "Fashion & DIY", desc: "Dr. Martens, battle jackets, mohawks, safety pins. SID knows how to look dangerous on any budget." },
+                { icon: "📋", title: "Zines & Culture", desc: "From Sniffin' Glue to Riot Grrrl press — the underground print culture that punk built." },
+                { icon: "🌍", title: "Global Punk Scenes", desc: "Indonesia, Brazil, Nigeria, Japan — punk is everywhere and SID knows the local scenes worldwide." },
+                { icon: "🎥", title: "Films & Books", desc: "Every essential punk documentary, film, and book. SID can build your entire punk education watchlist." },
+                { icon: "✊", title: "Punk Politics", desc: "Straight edge, anarchism, feminism, anti-racism — the politics that punk was built on." },
+              ].map((item, i) => (
+                <div key={i} className="sid-knowledge-card">
+                  <div className="sid-knowledge-icon">{item.icon}</div>
+                  <div className="sid-knowledge-title">{item.title}</div>
+                  <div className="sid-knowledge-desc">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="punk-divider"><span>// THINGS TO ASK SID //</span></div>
+            <div className="sid-questions-grid">
+              {[
+                "What's the difference between hardcore punk and metalcore?",
+                "Which Sex Pistols album should I start with?",
+                "How do I build a battle jacket from scratch?",
+                "What is straight edge and where did it come from?",
+                "Best Christian punk bands for someone new to the scene?",
+                "What happened at the CBGB venue?",
+                "Which punk documentaries should I watch first?",
+                "What makes Oi! punk different from street punk?",
+                "Who were the most important women in punk history?",
+                "What is anarcho-punk and what do they believe?",
+                "Best punk scenes outside the US and UK?",
+                "How did punk influence fashion in the 1970s?",
+              ].map((q, i) => (
+                <div key={i} className="sid-question-chip" onClick={() => {
+                  document.querySelector('.chat-fab')?.click();
+                  setTimeout(() => {
+                    const input = document.querySelector('.chat-input');
+                    if (input) {
+                      input.value = q;
+                      input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                  }, 300);
+                }}>
+                  <span className="sid-q-arrow">→</span> {q}
+                </div>
+              ))}
+            </div>
+
+            <div className="punk-divider"><span>// THE SID VICIOUS CONNECTION //</span></div>
+            <div className="sid-origin">
+              <div className="sid-origin-text">
+                <p>SID is named after <strong>Sid Vicious</strong> — born John Simon Ritchie, bassist for the Sex Pistols, and one of punk's most iconic and tragic figures. Sid couldn't really play bass. He didn't care. And somehow that made him more punk than anyone around him.</p>
+                <p>There's an irony in naming an all-knowing AI after the guy who famously knew nothing about music theory. SID the chatbot is the anti-Sid — all the attitude, all the knowledge, none of the chaos. Sid Vicious would probably hate it. Which makes it perfect.</p>
+                <p>SID stands for <strong>Scene Intelligence Database</strong> — but the Vicious reference is the one that counts. 🤘</p>
+              </div>
+              <div className="sid-origin-facts">
+                <div className="sid-fact-label">// SID VICIOUS //</div>
+                {[
+                  { label: "Born", val: "May 10, 1957 — London" },
+                  { label: "Died", val: "February 2, 1979 — New York" },
+                  { label: "Band", val: "Sex Pistols (1977–1978)" },
+                  { label: "Real Name", val: "John Simon Ritchie" },
+                  { label: "Known For", val: "Never Mind the Bollocks, chaos, the look" },
+                  { label: "Legacy", val: "The visual face of UK punk forever" },
+                ].map((f, i) => (
+                  <div key={i} className="sid-fact-row">
+                    <span className="sid-fact-label-item">{f.label}</span>
+                    <span className="sid-fact-val">{f.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="sid-cta-block">
+              <div className="sid-cta-text">Ready to talk punk?</div>
+              <button className="sid-launch-btn sid-launch-btn-big" onClick={() => document.querySelector('.chat-fab')?.click()}>
+                ⚡ START CHATTING WITH SID
+              </button>
+            </div>
+
           </div>
         </div>
       )}
@@ -2444,8 +3178,4 @@ export default function PunkHub() {
           </a>
         </div>
       </footer>
-
       <PunkChatBot />
-    </div>
-  );
-}
