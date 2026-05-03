@@ -344,7 +344,7 @@ const PUNK_PHOTO_GALLERIES = [
   { name: "CBGB Photo Archives", desc: "Images from the legendary New York venue that launched American punk. Artists, crowds, and chaos from the Bowery.", url: "https://www.gettyimages.com/search/2/image?phrase=cbgb+punk", emoji: "🏚️" },
 ];
 
-<PunkChatBot>// Punk Chatbot Component
+// Punk Chatbot Component
 function PunkChatBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -465,7 +465,6 @@ function PunkChatBot() {
     </>
   );
 }
-<PunkChatBot />
 // Gallery Image Component — generates unique AI image via Pollinations on each load
 function GalleryImage({ prompt, alt, span }) {
   const [imgSrc, setImgSrc] = useState(null);
