@@ -1,0 +1,49 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/find-stores"
+  to = "/.netlify/functions/find-stores"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-article"
+  to = "/.netlify/functions/generate-article"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-image"
+  to = "/.netlify/functions/generate-image"
+  status = 200
+
+[[redirects]]
+  from = "/api/find-shows"
+  to = "/.netlify/functions/find-shows"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-music"
+  to = "/.netlify/functions/generate-music"
+  status = 200
+
+[[redirects]]
+  from = "/api/find-christian-shows"
+  to = "/.netlify/functions/find-christian-shows"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-christian-music"
+  to = "/.netlify/functions/generate-christian-music"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-media"
+  to = "/.netlify/functions/generate-media"
+  status = 200
+
+[[redirects]]
+  from = "/api/punk-chat"
+  to = "/.netlify/functions/punk-chat"
+  status = 200
