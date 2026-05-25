@@ -1,1 +1,77 @@
+* ==========================================
+   TIMELINE STYLING FOR ALL COMPONENTS
+   ========================================= */
 
+.timeline-container {
+    width: 80%;
+    margin: 50px auto;
+    position: relative; /* Essential for positioning the line */
+    padding: 20px 0;
+}
+
+.timeline-header {
+    text-align: center;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+/* The main vertical line that connects all events */
+.timeline-line {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.timeline-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    border-left: 4px solid #c0392b; /* Dark Red Line */
+}
+
+/* Container for each individual item's content and dot */
+.timeline-item-wrapper {
+    display: flex;
+    align-items: flex-start; /* Aligns content baseline with the dot */
+    margin-bottom: 60px;
+    position: relative;
+    padding-left: 50px; /* Space for the dot */
+}
+
+/* The clickable dot on the line */
+.timeline-dot {
+    position: absolute;
+    left: -10px; /* Positioned precisely on the line */
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #c0392b;
+    border-radius: 50%;
+    border: 3px solid #eee; /* Adds a slight outline look */
+    z-index: 10; /* Ensures the dot sits above the line */
+}
+
+/* The main text content container */
+.timeline-content {
+    flex-grow: 1;
+}
+
+.timeline-title {
+    color: #c0392b;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+.timeline-date {
+    display: block;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.timeline-description {
+    line-height: 1.6;
+}
