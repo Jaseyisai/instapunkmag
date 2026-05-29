@@ -47,3 +47,13 @@
   from = "/api/punk-chat"
   to = "/.netlify/functions/punk-chat"
   status = 200
+
+[[redirects]]
+  from = "/api/generate-women-music"
+  to = "/.netlify/functions/generate-women-music"
+  status = 200
+
+[[redirects]]
+  from = "/api/find-women-shows"
+  to = "/.netlify/functions/find-women-shows"
+  status = 200
