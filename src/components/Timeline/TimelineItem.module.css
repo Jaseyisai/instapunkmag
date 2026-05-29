@@ -1,1 +1,68 @@
+/* 
+* This CSS is scoped ONLY to TimelineItem.jsx 
+* (e.g., .itemContainer, .itemContent)
+* Remember to adjust colors, spacing, and layout based on your design!
+*/
+
+/* 
+* 1. The Main Wrapper Container
+* This element needs to handle the overall layout, padding, 
+* and most importantly, the vertical alignment.
+*/
+.itemContainer {
+    display: flex;
+    align-items: flex-start; /* Ensures the text aligns with the dot/line */
+    margin: 20px 0; /* Space above and below the item */
+    position: relative; /* Important for positioning the vertical line */
+    padding-left: 40px; /* Creates space for the Timeline marker/dot */
+    min-height: 80px; /* Gives the container some minimum vertical space */
+}
+
+/* 
+* 2. The Decorative Timeline Line and Dot (The "Marker")
+* We use the ::before pseudo-element on the container to draw the line 
+* and a separate element for the actual visible dot.
+*/
+
+/* The invisible vertical line connecting everything */
+.itemContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px; /* Position the line relative to the padding */
+    bottom: 0;
+    width: 2px; /* Thickness of the line */
+    background-color: #ccc; /* Choose your desired color (e.g., #007bff) */
+}
+
+/* The visible circular dot on the line */
+.itemDot {
+    position: absolute;
+    top: 5px; /* Vertical alignment for the dot */
+    left: 18px; /* Slightly adjusted from the line to look good */
+    width: 10px;
+    height: 10px;
+    background-color: #ff6347; /* Your highlight color */
+    border-radius: 50%; /* Makes it a perfect circle */
+    z-index: 1; /* Ensures the dot sits above the pseudo-element line */
+}
+
+/* 
+* 3. The Actual Content/Card Area 
+* This is the part that holds your article text, image, etc.
+*/
+.itemContent {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    flex-grow: 1; /* Ensures the content takes up the remaining space */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle lift effect */
+}
+
+/* Optional: Add a slight visual break between items */
+/* You might need to target this based on how your main Timeline component works */
+.timeline-wrapper::after {
+    content: '';
+    /* Example of how to add separation between items */
+}
 
