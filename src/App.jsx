@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
+const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
 
 const PUNK_BANDS = [
   { name: "The Clash", era: "1976–1986", origin: "London, UK", genre: "Punk Rock / Post-Punk", desc: "One of the most influential punk bands ever, blending punk with reggae, ska, and rockabilly." },
@@ -11,6 +11,58 @@ const PUNK_BANDS = [
   { name: "Buzzcocks", era: "1976–2019", origin: "Manchester, UK", genre: "Punk Rock / Pop Punk", desc: "Brought melody and romantic angst to punk, influencing pop-punk for decades." },
   { name: "X-Ray Spex", era: "1976–1995", origin: "London, UK", genre: "Punk Rock / New Wave", desc: "Poly Styrene's sax-driven punk was years ahead of its time — feminist, joyful, chaotic." },
   { name: "Siouxsie and the Banshees", era: "1976–1996", origin: "London, UK", genre: "Post-Punk / Gothic Rock", desc: "Evolved from punk's raw edge into the founders of goth rock. Darkly majestic." },
+];
+
+const RIOT_GRRRL_TIMELINE = [
+  { year: "1989–1990", event: "The Seeds Are Planted", detail: "Kathleen Hanna, Tobi Vail, and Kathi Wilcox form Bikini Kill in Olympia, WA. Calvin Johnson's K Records scene and Evergreen State College become the incubator for a new kind of feminist punk." },
+  { year: "1991", event: "The Movement Is Named", detail: "Bikini Kill publish their first zine. The term 'Riot Grrrl' emerges — a deliberate misspelling combining girl power with a growl. Bratmobile forms in Eugene, OR." },
+  { year: "1992", event: "DC and the Explosion", detail: "Riot Grrrl weekly meetings begin in Washington DC. Heavens to Betsy, Excuse 17, and dozens of bands emerge. The International Pop Underground Convention brings it all together." },
+  { year: "1993", event: "Media Attention & Backlash", detail: "Mainstream press discovers Riot Grrrl and immediately misrepresents it. Bikini Kill and others declare a media blackout, refusing interviews. The movement turns inward and deeper." },
+  { year: "1994–1996", event: "Fragmentation & Evolution", detail: "Bikini Kill releases 'Pussy Whipped'. Sleater-Kinney forms in Olympia. Le Tigre germinates. The movement spreads globally through zine networks even as the original scene shifts." },
+  { year: "1997–2000", event: "Post-Grrrl", detail: "Bikini Kill breaks up in 1997. But the seeds have spread — feminist punk is now a permanent part of the landscape. Sleater-Kinney releases 'Dig Me Out', their masterpiece." },
+  { year: "2000s–Now", event: "The Ongoing Legacy", detail: "Le Tigre tours. Julie Ruin records. Kathleen Hanna's story is told in The Punk Singer documentary. A new generation of bands — Wet Leg, Amyl and the Sniffers, Scowl — carry the fire forward." },
+];
+
+const RIOT_GRRRL_BANDS = [
+  { name: "Bikini Kill", origin: "Olympia, WA", years: "1990–1997, 2019–present", desc: "The band that started it all. Kathleen Hanna's snarl, Tobi Vail's drums, and the Rebel Girl riff changed everything. Their reunion proved the fire never went out.", emoji: "⚡" },
+  { name: "Sleater-Kinney", origin: "Olympia, WA", years: "1994–2006, 2014–present", desc: "Corin Tucker and Carrie Brownstein built something that transcended Riot Grrrl entirely. 'Dig Me Out' is one of the greatest rock albums ever made, full stop.", emoji: "🎸" },
+  { name: "Bratmobile", origin: "Eugene / Washington DC", years: "1991–1994, 1999–2003", desc: "Rawer and more chaotic than Bikini Kill, Bratmobile were the beating heart of the DC Riot Grrrl scene. Allison Wolfe's vocals were pure confrontation.", emoji: "✊" },
+  { name: "Heavens to Betsy", origin: "Olympia, WA", years: "1991–1994", desc: "Corin Tucker's pre-Sleater-Kinney band. Spare, powerful, and emotionally devastating. Their 'Calculated' LP is criminally underheard.", emoji: "💥" },
+  { name: "Le Tigre", origin: "New York, NY", years: "1999–2005, 2023–present", desc: "Kathleen Hanna's post-Bikini Kill project fused feminist punk with electronic dance music. Political, danceable, and ahead of its time.", emoji: "🐯" },
+  { name: "Excuse 17", origin: "Olympia, WA", years: "1992–1995", desc: "Carrie Brownstein's first band before Sleater-Kinney. Noisy, smart, and deeply embedded in the Olympia scene.", emoji: "🔊" },
+  { name: "Team Dresch", origin: "Portland, OR", years: "1993–1998, 2004–present", desc: "Openly queer punk at a time when that was genuinely radical. Donna Dresch and co. made some of the most honest music of the era.", emoji: "🏳️‍🌈" },
+  { name: "Bangs", origin: "Portland, OR", years: "1999–2002", desc: "Post-Riot Grrrl Portland power-pop punk. Short-lived but brilliant — three albums of melodic noise that aged beautifully.", emoji: "🎵" },
+];
+
+const WOMEN_LEGENDS = [
+  { name: "Patti Smith", role: "The Godmother", years: "1974–present", desc: "Before Riot Grrrl, before punk was even named, Patti Smith was reinventing what a woman could do on a stage. 'Horses' is year zero for everything that followed.", emoji: "📖" },
+  { name: "Siouxsie Sioux", role: "Siouxsie and the Banshees", years: "1976–1996", desc: "The original goth queen. Siouxsie defined post-punk's visual and sonic aesthetic and influenced everyone from Madonna to Billie Eilish.", emoji: "🖤" },
+  { name: "Poly Styrene", role: "X-Ray Spex", years: "1976–2011", desc: "A mixed-race woman in 1977 punk screaming about plastic, consumerism, and identity. Decades ahead of everyone. 'Oh Bondage Up Yours!' remains perfect.", emoji: "🎤" },
+  { name: "Debbie Harry", role: "Blondie", years: "1974–present", desc: "Blondie walked the line between punk and pop better than anyone. Debbie Harry's cool detachment was its own kind of radical.", emoji: "💿" },
+  { name: "Joan Jett", role: "The Runaways / Joan Jett & the Blackhearts", years: "1975–present", desc: "Started in the all-female Runaways at 15. Still recording and touring. 'Bad Reputation' is not just a song, it's a philosophy.", emoji: "🎸" },
+  { name: "Exene Cervenka", role: "X", years: "1977–present", desc: "Los Angeles punk royalty. X's dual-vocal attack with John Doe is one of punk's greatest sounds, and Exene's literary lyrics set them apart completely.", emoji: "✍️" },
+  { name: "Kim Gordon", role: "Sonic Youth", years: "1981–2011", desc: "Bass, guitar, vocals, and an art-world cool that made Sonic Youth something entirely their own. Gordon's memoir 'Girl in a Band' is essential reading.", emoji: "🎨" },
+  { name: "Corin Tucker", role: "Heavens to Betsy / Sleater-Kinney", years: "1991–present", desc: "One of rock's greatest voices — raw, wailing, and utterly distinctive. From Riot Grrrl beginnings to arena stages with Sleater-Kinney.", emoji: "🌟" },
+];
+
+const NEW_WOMEN_PUNK_CARDS = [
+  { title: "Amyl and the Sniffers", genre: "Pub Rock / Punk", desc: "Amy Taylor is the most electrifying frontwoman in punk right now. Australia's finest export since AC/DC — raw, ferocious, and completely in control.", emoji: "🔥" },
+  { title: "Scowl", genre: "Hardcore Punk", desc: "Kat Moss and Santa Cruz hardcore at its most ferocious. One of the most exciting new voices in the scene — politically sharp and physically intense.", emoji: "✊" },
+  { title: "Wet Leg", genre: "Indie Punk / Post-Punk", desc: "Rhian Teasdale and Hester Chambers from the Isle of Wight. Deadpan, witty, and deceptively sharp. Their debut album was one of the best of 2022.", emoji: "🎸" },
+  { title: "Destroy Boys", genre: "Punk Rock", desc: "Sacramento trio who grew up DIY and never forgot it. Alexia Roditis' vocals tear through every song. Loud, melodic, and entirely their own thing.", emoji: "💥" },
+  { title: "Surfbort", genre: "Garage Punk", desc: "Brooklyn's Dani Miller is one of punk's great characters — chaotic, joyful, and completely unhinged in the best way possible.", emoji: "🌊" },
+  { title: "The Linda Lindas", genre: "Punk Rock / Power Pop", desc: "Four girls from LA who went viral in a library and then delivered one of punk's most joyful albums. The youngest band on this list and already legends.", emoji: "⭐" },
+  { title: "Chubby and the Gang", genre: "Oi! / Street Punk", desc: "London street punk with Charlie Manning-Walker on vocals. Angry, working-class, and brutally catchy. The UK scene's best kept secret going mainstream.", emoji: "🇬🇧" },
+  { title: "Militarie Gun", genre: "Hardcore / Post-Hardcore", desc: "Though fronted by Ian Shelton, Militarie Gun's scene is deeply rooted in feminist hardcore values. Their hooks are undeniable.", emoji: "🎯" },
+];
+
+const WOMEN_PUNK_ARTICLES = [
+  { title: "Riot Grrrl: The Movement That Changed Everything", category: "History", excerpt: "In 1991 a group of women in Olympia, Washington decided punk had a problem. What they built in response reshaped music, feminism, and DIY culture permanently.", readTime: "10 min read", emoji: "✊" },
+  { title: "The Zines That Started a Revolution", category: "Culture", excerpt: "Before the internet, Riot Grrrl spread through photocopied zines passed hand to hand at shows. The underground press that built a global feminist punk movement.", readTime: "7 min read", emoji: "📋" },
+  { title: "Patti Smith: Before Punk Had a Name", category: "History", excerpt: "In 1975, Patti Smith released Horses and invented something that didn't have a name yet. Every woman in punk owes her a debt.", readTime: "8 min read", emoji: "📖" },
+  { title: "The Linda Lindas and Punk's Next Generation", category: "New Music", excerpt: "Four girls from LA, a library, a viral moment, and a debut album that proved punk's future is in good hands. Meet the next wave.", readTime: "6 min read", emoji: "⭐" },
+  { title: "Siouxsie Sioux: Architect of Darkness", category: "Legend", excerpt: "She turned punk's raw energy into something gothic, operatic, and timeless. Without Siouxsie there is no Cure, no Bauhaus, no modern goth aesthetic.", readTime: "8 min read", emoji: "🖤" },
+  { title: "Amy Taylor and the Return of the Frontwoman", category: "New Music", excerpt: "Amyl and the Sniffers' Amy Taylor is the most charismatic punk frontwoman of her generation. How she became the face of punk's global revival.", readTime: "7 min read", emoji: "🔥" },
 ];
 
 const NEW_MUSIC_CARDS = [
@@ -778,6 +830,143 @@ function MusicReader({ track, onClose }) {
   );
 }
 
+// Women in Punk Show Finder
+function WomenShowFinder() {
+  const [location, setLocation] = useState("");
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function findShows() {
+    if (!location.trim()) return;
+    setLoading(true); setResults(null);
+    try {
+      const response = await fetch("/api/find-women-shows", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location }),
+      });
+      const data = await response.json();
+      setResults(Array.isArray(data) ? data : [{ venue: "Search Error", band: "", genre: "", vibe: data.error || "Try a nearby city.", tip: "" }]);
+    } catch (e) {
+      setResults([{ venue: "Search Error", band: "", genre: "", vibe: "Could not connect. Please try again.", tip: "" }]);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="store-finder">
+      <div className="finder-controls">
+        <input type="text" placeholder="Enter your city or zip code..." value={location}
+          onChange={e => setLocation(e.target.value)} onKeyDown={e => e.key === "Enter" && findShows()}
+          className="finder-input" style={{borderColor:"#ff6b9d"}} />
+        <button onClick={findShows} className="finder-btn" disabled={loading}
+          style={{background:"#b5005b"}}>{loading ? "SEARCHING..." : "FIND SHOWS"}</button>
+      </div>
+      {loading && (
+        <div className="finder-loading">
+          <div className="loading-bars">{[...Array(8)].map((_, i) => <span key={i} style={{animationDelay:`${i*0.1}s`, background:"#ff6b9d"}} />)}</div>
+          <p>Finding the women who shred...</p>
+        </div>
+      )}
+      {results && (
+        <div className="show-results">
+          {results.map((show, i) => (
+            <div key={i} className="show-card" style={{borderLeftColor:"#ff6b9d"}}>
+              <div className="show-header">
+                <div>
+                  <div className="show-band" style={{color:"#ff6b9d"}}>{show.band}</div>
+                  <div className="show-venue">📍 {show.venue}</div>
+                </div>
+                <span className="store-type-badge" style={{color:"#ff6b9d"}}>{show.genre}</span>
+              </div>
+              <p className="store-reason">{show.vibe}</p>
+              {show.tip && <p className="show-tip" style={{color:"#ff6b9d"}}>💡 {show.tip}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+      {!results && !loading && (
+        <div className="finder-placeholder">
+          <div className="anarchy-symbol" style={{color:"#ff6b9d"}}>♀</div>
+          <p>Enter your location to find female-fronted punk shows near you</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Women in Punk Music Reader
+function WomenMusicReader({ track, onClose }) {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchFeature() {
+      try {
+        const response = await fetch("/api/generate-women-music", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: track.title, genre: track.genre, desc: track.desc }),
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setContent(data);
+      } catch (e) { setError("Could not load feature. Please try again."); }
+      setLoading(false);
+    }
+    fetchFeature();
+  }, [track]);
+
+  return (
+    <div className="article-reader-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="article-reader" style={{borderTopColor:"#ff6b9d"}}>
+        <button className="article-reader-close" onClick={onClose}>✕ CLOSE</button>
+        {loading && (
+          <div className="article-reader-loading">
+            <div className="loading-bars">{[...Array(8)].map((_, i) => <span key={i} style={{animationDelay:`${i*0.1}s`, background:"#ff6b9d"}} />)}</div>
+            <p>Generating feature...</p>
+          </div>
+        )}
+        {error && <div className="article-reader-error">{error}</div>}
+        {content && (
+          <div className="article-reader-content">
+            <div className="ar-category" style={{color:"#ff6b9d"}}>{track.genre}</div>
+            <h1 className="ar-headline">{content.headline || track.title}</h1>
+            <p className="ar-standfirst">{content.standfirst}</p>
+            <div className="ar-meta"><span>{track.emoji}</span><span>Women in Punk</span><span>Insta Punk Mag</span></div>
+            <div className="ar-divider" style={{background:"linear-gradient(90deg,#ff6b9d,transparent)"}} />
+            {content.body && content.body.split("\n\n").map((para, i) => {
+              if (i === 2 && content.pullquote) return (
+                <div key={i}>
+                  <blockquote className="ar-pullquote" style={{borderLeftColor:"#ff6b9d", background:"rgba(255,107,157,0.07)"}}>{content.pullquote}</blockquote>
+                  <p className="ar-para">{para}</p>
+                </div>
+              );
+              return <p key={i} className="ar-para">{para}</p>;
+            })}
+            {content.listenTo && (
+              <div style={{marginTop:"1.5rem", padding:"1rem", background:"rgba(255,107,157,0.07)", borderLeft:"3px solid #ff6b9d"}}>
+                <div className="diy-tools-label" style={{marginBottom:"0.5rem", color:"#ff6b9d"}}>// LISTEN TO</div>
+                {content.listenTo.map((item, i) => (
+                  <a key={i} href={`https://www.youtube.com/results?search_query=${encodeURIComponent(item)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{display:"block", fontFamily:"'Share Tech Mono', monospace", fontSize:"0.78rem", color:"#ff6b9d", marginBottom:"0.5rem", textDecoration:"none"}}>
+                    ▶ {item}
+                  </a>
+                ))}
+              </div>
+            )}
+            {content.tags && <div className="ar-tags">{content.tags.map((tag, i) => <span key={i} className="ar-tag" style={{borderColor:"#ff6b9d", color:"#ff6b9d"}}>#{tag}</span>)}</div>}
+            <div className="ar-kofi">
+              <p className="ar-kofi-text">Enjoyed this feature? Help keep Insta Punk Mag alive and independent.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">☕ BUY US A COFFEE ON KO-FI</a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Christian Show Finder Component
 function ChristianShowFinder() {
   const [location, setLocation] = useState("");
@@ -1247,6 +1436,8 @@ export default function PunkHub() {
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [selectedChristianTrack, setSelectedChristianTrack] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(null);
+  const [selectedWomenTrack, setSelectedWomenTrack] = useState(null);
+  const [selectedWomenArticle, setSelectedWomenArticle] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -2048,6 +2239,49 @@ export default function PunkHub() {
         .photo-gallery-name { font-family: 'Special Elite', cursive; font-size: 1.1rem; margin-bottom: 0.4rem; }
         .photo-gallery-desc { font-size: 0.83rem; color: #aaa; line-height: 1.6; font-weight: 300; }
 
+        /* === WOMEN IN PUNK === */
+        .wip-hero { background: linear-gradient(135deg, #1a0010 0%, #0a0a0a 100%); border: 1px solid rgba(255,107,157,0.2); border-left: 4px solid #ff6b9d; padding: 2.5rem; margin-bottom: 3rem; position: relative; overflow: hidden; }
+        .wip-hero::before { content: '♀'; position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); font-size: 8rem; color: rgba(255,107,157,0.06); line-height: 1; pointer-events: none; }
+        .wip-hero-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; color: #ff6b9d; margin-bottom: 0.75rem; }
+        .wip-hero-title { font-family: 'Special Elite', cursive; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--white); margin-bottom: 1rem; line-height: 1.1; }
+        .wip-hero-title span { color: #ff6b9d; }
+        .wip-hero-text { font-size: 1rem; color: #ccc; line-height: 1.8; font-weight: 300; max-width: 680px; }
+        .wip-timeline { position: relative; padding-left: 2rem; margin-bottom: 2rem; }
+        .wip-timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #ff6b9d, #b5005b); }
+        .wip-timeline-item { position: relative; margin-bottom: 2rem; padding-left: 1.5rem; }
+        .wip-timeline-item::before { content: ''; position: absolute; left: -2.4rem; top: 0.4rem; width: 12px; height: 12px; background: #ff6b9d; border-radius: 50%; }
+        .wip-timeline-year { font-family: 'Share Tech Mono', monospace; color: #ff6b9d; font-size: 0.8rem; letter-spacing: 0.1em; }
+        .wip-timeline-event { font-family: 'Special Elite', cursive; font-size: 1.2rem; margin: 0.2rem 0; }
+        .wip-timeline-detail { color: #aaa; font-size: 0.92rem; line-height: 1.65; font-weight: 300; }
+        .wip-band-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.1rem; margin-bottom: 2rem; }
+        .wip-band-card { background: var(--dark); border: 1px solid rgba(255,107,157,0.15); border-top: 3px solid #ff6b9d; padding: 1.4rem; cursor: pointer; transition: transform 0.15s; position: relative; overflow: hidden; }
+        .wip-band-card:hover { transform: translateY(-4px); border-color: rgba(255,107,157,0.5); }
+        .wip-band-card:hover::after { content: '→ READ FEATURE'; position: absolute; bottom: 1rem; right: 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: #ff6b9d; letter-spacing: 0.1em; }
+        .wip-band-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+        .wip-band-name { font-family: 'Special Elite', cursive; font-size: 1.3rem; color: var(--white); margin-bottom: 0.2rem; }
+        .wip-band-meta { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: #ff6b9d; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+        .wip-band-desc { font-size: 0.87rem; color: #bbb; line-height: 1.65; font-weight: 300; }
+        .wip-legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .wip-legend-card { background: linear-gradient(135deg, rgba(181,0,91,0.08), transparent); border: 1px solid rgba(255,107,157,0.15); padding: 1.3rem; transition: transform 0.15s; }
+        .wip-legend-card:hover { transform: translateY(-3px); }
+        .wip-legend-emoji { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+        .wip-legend-name { font-family: 'Special Elite', cursive; font-size: 1.15rem; color: var(--white); margin-bottom: 0.15rem; }
+        .wip-legend-role { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: #ff6b9d; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+        .wip-legend-years { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--grey); margin-bottom: 0.6rem; }
+        .wip-legend-desc { font-size: 0.83rem; color: #aaa; line-height: 1.6; font-weight: 300; }
+        .wip-article-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.1rem; margin-bottom: 2rem; }
+        .wip-article-card { background: var(--dark); border: 1px solid rgba(255,107,157,0.12); padding: 1.4rem; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
+        .wip-article-card:hover { transform: translateY(-4px); border-color: rgba(255,107,157,0.4); }
+        .wip-article-emoji { font-size: 2.2rem; margin-bottom: 0.6rem; display: block; }
+        .wip-article-category { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; color: #ff6b9d; text-transform: uppercase; margin-bottom: 0.35rem; }
+        .wip-article-title { font-family: 'Special Elite', cursive; font-size: 1.2rem; margin-bottom: 0.5rem; line-height: 1.3; }
+        .wip-article-excerpt { font-size: 0.86rem; color: #bbb; line-height: 1.65; font-weight: 300; margin-bottom: 0.75rem; }
+        .wip-article-read { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--grey); }
+        .wip-manifesto { background: linear-gradient(135deg, #1a0010, #0d000a); border: 2px solid #ff6b9d; padding: 2rem; margin: 2rem 0; position: relative; }
+        .wip-manifesto::before { content: '♀'; position: absolute; top: -0.9rem; left: 1.5rem; background: var(--black); padding: 0 0.5rem; font-size: 1.4rem; color: #ff6b9d; }
+        .wip-manifesto-text { font-family: 'Special Elite', cursive; font-size: clamp(1rem, 2.5vw, 1.4rem); line-height: 1.65; color: var(--white); }
+        .wip-manifesto-attr { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: rgba(255,107,157,0.6); margin-top: 1rem; letter-spacing: 0.1em; }
+
         /* === SHOW RESULTS === */
         .show-card { background: var(--dark); border: 1px solid var(--mid); border-left: 4px solid var(--yellow); padding: 1.3rem; }
         .show-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
@@ -2348,6 +2582,7 @@ export default function PunkHub() {
                 { nav: "FASHION", label: "Fashion", icon: "🥾", desc: "Dr. Martens. Leather jackets. Safety pins. Mohawks. The complete punk style guide." },
                 { nav: "STORES", label: "Store Finder", icon: "📍", desc: "Find punk shops, thrift stores, and vintage spots anywhere in your area." },
                 { nav: "ARTICLES", label: "Articles", icon: "📋", desc: "Stories, essays, and deep dives into the culture. By punks, for punks." },
+                { nav: "WOMEN IN PUNK", label: "Women in Punk", icon: "♀", desc: "From Riot Grrrl to Amy Taylor — the complete story of women in punk. History, legends, new bands, articles and show finder." },
                 { nav: "CHRISTIAN PUNK", label: "Christian Punk", icon: "✝️", desc: "Faith meets fury. The bands who found God in the pit and brought the gospel to the stage." },
                 { nav: "GALLERY", label: "Gallery", icon: "📷", desc: "AI-generated punk imagery, iconic videos, legendary photographers, and online galleries." },
                 { nav: "MEDIA", label: "Books & Films", icon: "🎬", desc: "Essential punk books, films, short films, and documentaries. The culture in print and on screen." },
@@ -2609,6 +2844,109 @@ export default function PunkHub() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* WOMEN IN PUNK */}
+      {activeSection === "WOMEN IN PUNK" && (
+        <div className="section-wrap">
+          {selectedWomenTrack && (
+            <WomenMusicReader track={selectedWomenTrack} onClose={() => setSelectedWomenTrack(null)} />
+          )}
+          {selectedWomenArticle && (
+            <ArticleReader article={selectedWomenArticle} onClose={() => setSelectedWomenArticle(null)} />
+          )}
+
+          {/* Hero */}
+          <div className="wip-hero">
+            <div className="wip-hero-label">// INSTA PUNK MAG PRESENTS //</div>
+            <h2 className="wip-hero-title">Women <span>in Punk</span></h2>
+            <p className="wip-hero-text">From Patti Smith's 1975 howl to Amy Taylor's stage-destroying present, women have always been at the centre of punk — not on its margins. This is their story, their music, their movement. It didn't start with Riot Grrrl and it won't end with whatever comes next.</p>
+          </div>
+
+          {/* Riot Grrrl History */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// RIOT GRRRL: THE MOVEMENT //</span></div>
+          <div className="wip-manifesto">
+            <p className="wip-manifesto-text">"We are angry at a society that tells us Girl = Dumb, Girl = Bad, Girl = Weak. We are creating our own reality." — Bikini Kill, Riot Grrrl Manifesto, 1991</p>
+            <p className="wip-manifesto-attr">— BIKINI KILL ZINE, 1991</p>
+          </div>
+
+          <div className="wip-timeline">
+            {RIOT_GRRRL_TIMELINE.map((t, i) => (
+              <div key={i} className="wip-timeline-item">
+                <div className="wip-timeline-year">{t.year}</div>
+                <div className="wip-timeline-event">{t.event}</div>
+                <div className="wip-timeline-detail">{t.detail}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Riot Grrrl Bands */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// RIOT GRRRL BANDS — CLICK TO READ FEATURE //</span></div>
+          <div className="wip-band-grid">
+            {RIOT_GRRRL_BANDS.map((band, i) => (
+              <div key={i} className="wip-band-card"
+                onClick={() => setSelectedWomenTrack({ title: band.name, genre: "Riot Grrrl / Feminist Punk", desc: band.desc, emoji: band.emoji })}>
+                <span className="wip-band-emoji">{band.emoji}</span>
+                <div className="wip-band-name">{band.name}</div>
+                <div className="wip-band-meta">{band.origin} · {band.years}</div>
+                <div className="wip-band-desc">{band.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Legends */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// LEGENDS — WOMEN WHO BUILT PUNK //</span></div>
+          <div className="wip-legend-grid">
+            {WOMEN_LEGENDS.map((legend, i) => (
+              <div key={i} className="wip-legend-card">
+                <span className="wip-legend-emoji">{legend.emoji}</span>
+                <div className="wip-legend-name">{legend.name}</div>
+                <div className="wip-legend-role">{legend.role}</div>
+                <div className="wip-legend-years">{legend.years}</div>
+                <div className="wip-legend-desc">{legend.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* New Bands */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// NEW WAVE — WOMEN RIPPING IT NOW //</span></div>
+          <div className="wip-band-grid">
+            {NEW_WOMEN_PUNK_CARDS.map((band, i) => (
+              <div key={i} className="wip-band-card"
+                onClick={() => setSelectedWomenTrack({ title: band.title, genre: band.genre, desc: band.desc, emoji: band.emoji })}>
+                <span className="wip-band-emoji">{band.emoji}</span>
+                <div className="wip-band-name">{band.title}</div>
+                <div className="wip-band-meta">{band.genre}</div>
+                <div className="wip-band-desc">{band.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Articles */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// ARTICLES — CLICK TO READ //</span></div>
+          <div className="wip-article-grid">
+            {WOMEN_PUNK_ARTICLES.map((a, i) => (
+              <div key={i} className="wip-article-card"
+                onClick={() => setSelectedWomenArticle({ ...a, readTime: a.readTime })}>
+                <span className="wip-article-emoji">{a.emoji}</span>
+                <div className="wip-article-category">{a.category}</div>
+                <div className="wip-article-title">{a.title}</div>
+                <div className="wip-article-excerpt">{a.excerpt}</div>
+                <span className="wip-article-read">⏱ {a.readTime} &nbsp;·&nbsp; <span style={{color:"#ff6b9d"}}>READ NOW →</span></span>
+              </div>
+            ))}
+          </div>
+
+          {/* Show Finder */}
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// FIND FEMALE-FRONTED SHOWS NEAR YOU //</span></div>
+          <WomenShowFinder />
+
+          <div className="wip-manifesto" style={{marginTop:"2rem"}}>
+            <p className="wip-manifesto-text">Punk was never just for boys. It was always for the outsiders, the angry, the ones told to be quiet. Women didn't join punk — they built it.</p>
+            <p className="wip-manifesto-attr">— INSTA PUNK MAG</p>
+          </div>
+
         </div>
       )}
 
@@ -3016,6 +3354,6 @@ export default function PunkHub() {
         </div>
       </footer>
       <PunkChatBot />
-</div>
+    </div>
   );
 }
