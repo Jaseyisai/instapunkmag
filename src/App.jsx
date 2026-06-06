@@ -518,38 +518,50 @@ function PunkChatBot() {
   );
 }
 
-// Gallery Image Component — generates unique AI image via Pollinations on each load
-function GalleryImage({ prompt, alt, span }) {
+// Gallery Image Component — static by default, AI on demand
+function GalleryImage({ prompt, alt, span, useAI }) {
   const [imgSrc, setImgSrc] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const seed = useRef(Math.floor(Math.random() * 999999));
 
+  // Static Unsplash fallbacks keyed to punk themes
+  const staticMap = {
+    "punk rock concert": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+    "studded leather": "https://images.unsplash.com/photo-1598387993441-a364f854cde4?w=800&q=80",
+    "electric guitar": "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=800&q=80",
+    "punk rock band": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80",
+    "punk fashion": "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?w=800&q=80",
+    "vintage vinyl": "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=800&q=80",
+    "punk zine": "https://images.unsplash.com/photo-1501386761578-eaa54b945b46?w=800&q=80",
+    "Dr Martens": "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80",
+  };
+
+  const staticKey = Object.keys(staticMap).find(k => prompt.toLowerCase().includes(k.toLowerCase()));
+  const staticSrc = staticMap[staticKey] || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80";
+
   useEffect(() => {
+    if (!useAI) return;
     let cancelled = false;
     async function fetchImage() {
+      setLoading(true);
       try {
         const response = await fetch("/api/generate-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt, seed: seed.current }),
         });
         if (!response.ok) throw new Error("Failed");
         const blob = await response.blob();
-        if (!cancelled) {
-          setImgSrc(URL.createObjectURL(blob));
-          setLoading(false);
-        }
+        if (!cancelled) { setImgSrc(URL.createObjectURL(blob)); setLoading(false); }
       } catch (e) {
-        if (!cancelled) {
-          setError(true);
-          setLoading(false);
-        }
+        if (!cancelled) { setError(true); setLoading(false); }
       }
     }
     fetchImage();
     return () => { cancelled = true; };
-  }, [prompt]);
+  }, [useAI, prompt]);
+
+  const displaySrc = imgSrc || staticSrc;
 
   return (
     <div className="gallery-item" style={span ? { gridColumn: `span ${span}` } : {}}>
@@ -559,14 +571,9 @@ function GalleryImage({ prompt, alt, span }) {
           <span>Generating...</span>
         </div>
       )}
-      {error && (
-        <div className="gallery-placeholder">
-          <span style={{ color: "var(--grey)", fontSize: "0.75rem" }}>Image unavailable</span>
-        </div>
-      )}
-      {imgSrc && (
+      {!loading && (
         <>
-          <img src={imgSrc} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src={displaySrc} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           <div className="gallery-overlay" />
         </>
       )}
@@ -1865,7 +1872,62 @@ export default function PunkHub() {
         .video-play { font-size: 3rem; color: var(--red); }
         .video-title { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); text-align: center; padding: 0 1rem; letter-spacing: 0.05em; }
 
-        /* === MEET SID PAGE === */
+        /* === HOME FEATURED === */
+        .home-featured { margin-bottom: 3rem; }
+        .home-featured-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; color: var(--red); margin-bottom: 1rem; }
+        .home-featured-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; }
+        @media (max-width: 700px) { .home-featured-grid { grid-template-columns: 1fr; } }
+        .home-feat-main {
+          background: linear-gradient(135deg, #1a0010, #0d000a);
+          border: 1px solid rgba(255,107,157,0.3); border-left: 4px solid #ff6b9d;
+          padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;
+          transition: transform 0.15s;
+        }
+        .home-feat-main:hover { transform: translateY(-4px); }
+        .home-feat-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; color: #ff6b9d; margin-bottom: 0.75rem; }
+        .home-feat-title { font-family: 'Special Elite', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--white); margin-bottom: 1rem; line-height: 1.1; }
+        .home-feat-desc { font-size: 0.9rem; color: #ccc; line-height: 1.75; font-weight: 300; margin-bottom: 1.5rem; flex: 1; }
+        .home-feat-cta { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; color: #ff6b9d; }
+        .home-feat-side { display: flex; flex-direction: column; gap: 0.75rem; }
+        .home-feat-card {
+          background: var(--dark); border: 1px solid var(--mid);
+          padding: 1rem 1.2rem; cursor: pointer;
+          transition: border-color 0.15s, transform 0.15s;
+          flex: 1;
+        }
+        .home-feat-card:hover { border-color: var(--red); transform: translateX(4px); }
+        .home-feat-card-label { font-family: 'Special Elite', cursive; font-size: 1rem; margin-bottom: 0.3rem; }
+        .home-feat-card-sub { font-size: 0.8rem; color: var(--grey); line-height: 1.5; font-weight: 300; }
+
+        .home-articles-preview { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+        .home-article-chip {
+          display: flex; align-items: center; gap: 1rem;
+          background: var(--dark); border: 1px solid var(--mid);
+          padding: 0.9rem 1.2rem; cursor: pointer;
+          transition: border-color 0.15s, transform 0.15s;
+        }
+        .home-article-chip:hover { border-color: var(--red); transform: translateX(4px); }
+        .home-chip-emoji { font-size: 1.6rem; flex-shrink: 0; }
+        .home-chip-category { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--yellow); text-transform: uppercase; margin-bottom: 0.2rem; }
+        .home-chip-title { font-family: 'Special Elite', cursive; font-size: 1.05rem; }
+        .home-chip-arrow { font-family: 'Share Tech Mono', monospace; color: var(--red); margin-left: auto; flex-shrink: 0; font-size: 1rem; }
+        .home-see-all {
+          background: none; border: 1px solid var(--mid); color: var(--grey);
+          font-family: 'Share Tech Mono', monospace; font-size: 0.72rem;
+          letter-spacing: 0.15em; padding: 0.7rem; cursor: pointer;
+          transition: all 0.15s; text-align: center;
+        }
+        .home-see-all:hover { border-color: var(--red); color: var(--white); }
+
+        .home-kofi-strip {
+          display: flex; align-items: center; justify-content: space-between;
+          flex-wrap: wrap; gap: 1rem;
+          border: 1px solid rgba(255,94,91,0.3); padding: 1.5rem 2rem;
+          margin-top: 2rem; background: rgba(255,94,91,0.05);
+        }
+        .home-kofi-text { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--grey); letter-spacing: 0.08em; line-height: 1.6; }
+
+        /* === GALLERY FIX — static images, no AI on load === */
         .sid-page { padding-bottom: 2rem; }
 
         .sid-hero {
@@ -2560,33 +2622,77 @@ export default function PunkHub() {
             <div className="diagonal-tape" />
             <div className="hero-anarchy">Ⓐ</div>
             <h1 className="hero-title">One Sound.<br /><em>No Rules.</em><br />All Culture.</h1>
-            <p className="hero-sub">// FASHION · MUSIC · HISTORY · COMMUNITY · FAITH //</p>
+            <p className="hero-sub">// THE COMPLETE PUNK CULTURE HUB //</p>
             <div className="hero-ctas">
-              <button className="cta-btn cta-primary" onClick={() => scrollToSection("HISTORY")}>EXPLORE HISTORY</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSection("STORES")}>FIND STORES</button>
+              <button className="cta-btn cta-primary" onClick={() => scrollToSection("ARTICLES")}>READ LATEST ARTICLES</button>
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSection("MEET SID")}>MEET SID →</button>
             </div>
           </section>
 
           <div className="section-wrap">
+
+            {/* Featured spotlight */}
+            <div className="home-featured">
+              <div className="home-featured-label">// START HERE //</div>
+              <div className="home-featured-grid">
+                <div className="home-feat-main" onClick={() => scrollToSection("WOMEN IN PUNK")} style={{cursor:"pointer"}}>
+                  <div className="home-feat-tag">Featured Section</div>
+                  <div className="home-feat-title">Women in Punk</div>
+                  <p className="home-feat-desc">From Patti Smith's 1975 howl to Amy Taylor's stage-destroying present — the complete story of women who built, defined, and are still tearing apart the punk scene. Riot Grrrl history, legends, new bands, articles, and a show finder.</p>
+                  <div className="home-feat-cta">EXPLORE NOW →</div>
+                </div>
+                <div className="home-feat-side">
+                  {[
+                    { nav: "MUSIC", label: "🎸 New Music Features", sub: "AI-generated features on the bands ripping it right now" },
+                    { nav: "DIY", label: "🦺 DIY Workshop", sub: "Build a battle jacket, stud a leather jacket, screen print a tee" },
+                    { nav: "STORES", label: "📍 Find Punk Stores", sub: "Punk shops and thrift stores near you — just enter your zip" },
+                    { nav: "MEET SID", label: "🤖 Ask SID", sub: "Our AI punk expert answers anything about the culture" },
+                  ].map((f, i) => (
+                    <div key={i} className="home-feat-card" onClick={() => {
+                      if (f.nav === "DIY") { scrollToSection("FASHION"); }
+                      else { scrollToSection(f.nav); }
+                    }}>
+                      <div className="home-feat-card-label">{f.label}</div>
+                      <div className="home-feat-card-sub">{f.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="punk-divider"><span>// THIS MONTH'S ARTICLES //</span></div>
+            <div className="home-articles-preview">
+              {ARTICLES.slice(0, 3).map((a, i) => (
+                <div key={i} className="home-article-chip" onClick={() => { scrollToSection("ARTICLES"); setSelectedArticle(a); }}>
+                  <span className="home-chip-emoji">{a.emoji}</span>
+                  <div>
+                    <div className="home-chip-category">{a.category}</div>
+                    <div className="home-chip-title">{a.title}</div>
+                  </div>
+                  <span className="home-chip-arrow">→</span>
+                </div>
+              ))}
+              <button className="home-see-all" onClick={() => scrollToSection("ARTICLES")}>SEE ALL ARTICLES →</button>
+            </div>
+
             <div className="manifesto">
               <p className="manifesto-text">Punk is not just music. It's a way of thinking. A way of refusing. A way of making something out of nothing and saying it louder than anyone who told you to be quiet.</p>
               <p className="manifesto-attr">— INSTA PUNK MAG MANIFESTO</p>
             </div>
 
-            <div className="punk-divider"><span>// WHAT'S INSIDE //</span></div>
-
+            <div className="punk-divider"><span>// EXPLORE EVERYTHING //</span></div>
             <div className="band-grid">
               {[
-                { nav: "HISTORY", label: "History", icon: "📜", desc: "From CBGB to global stages — trace punk's explosive timeline from 1974 to now." },
-                { nav: "MUSIC", label: "Music", icon: "🎸", desc: "Essential bands, albums, and the sounds that changed everything. Loud. Fast. Angry." },
-                { nav: "FASHION", label: "Fashion", icon: "🥾", desc: "Dr. Martens. Leather jackets. Safety pins. Mohawks. The complete punk style guide." },
-                { nav: "STORES", label: "Store Finder", icon: "📍", desc: "Find punk shops, thrift stores, and vintage spots anywhere in your area." },
-                { nav: "ARTICLES", label: "Articles", icon: "📋", desc: "Stories, essays, and deep dives into the culture. By punks, for punks." },
-                { nav: "WOMEN IN PUNK", label: "Women in Punk", icon: "♀", desc: "From Riot Grrrl to Amy Taylor — the complete story of women in punk. History, legends, new bands, articles and show finder." },
-                { nav: "CHRISTIAN PUNK", label: "Christian Punk", icon: "✝️", desc: "Faith meets fury. The bands who found God in the pit and brought the gospel to the stage." },
-                { nav: "GALLERY", label: "Gallery", icon: "📷", desc: "AI-generated punk imagery, iconic videos, legendary photographers, and online galleries." },
-                { nav: "MEDIA", label: "Books & Films", icon: "🎬", desc: "Essential punk books, films, short films, and documentaries. The culture in print and on screen." },
-                { nav: "MEET SID", label: "Meet SID", icon: "🤖", desc: "Meet SID — your AI punk culture expert. Ask anything about punk history, music, fashion, and more." },
+                { nav: "HISTORY", label: "History", icon: "📜", desc: "From CBGB to global stages — punk's explosive timeline from 1974 to now." },
+                { nav: "MUSIC", label: "Music", icon: "🎸", desc: "Essential bands, new music features, show finder, and essential albums." },
+                { nav: "FASHION", label: "Fashion & DIY", icon: "🥾", desc: "Dr. Martens, leather jackets, battle vests — and how to make them yourself." },
+                { nav: "WOMEN IN PUNK", label: "Women in Punk", icon: "♀", desc: "Riot Grrrl history, legends, new bands, and female-fronted show finder." },
+                { nav: "CHRISTIAN PUNK", label: "Christian Punk", icon: "✝️", desc: "Faith meets fury. The bands who found God in the pit." },
+                { nav: "ARTICLES", label: "Articles", icon: "📋", desc: "AI-generated deep dives updated monthly. Click any card to read." },
+                { nav: "STORES", label: "Store Finder", icon: "📍", desc: "Find punk shops and thrift stores anywhere. Just enter your zip." },
+                { nav: "GALLERY", label: "Gallery", icon: "📷", desc: "Videos, legendary photographers, and online punk photo archives." },
+                { nav: "MEDIA", label: "Books & Films", icon: "🎬", desc: "Essential punk books, films, shorts, and documentaries." },
+                { nav: "MEET SID", label: "Meet SID", icon: "🤖", desc: "Our AI punk expert. Ask anything. He knows everything Sid Vicious didn't." },
               ].map(item => (
                 <div key={item.nav} className="band-card" onClick={() => scrollToSection(item.nav)} style={{cursor:"pointer"}}>
                   <div style={{fontSize:"2rem", marginBottom:"0.5rem"}}>{item.icon}</div>
@@ -2595,6 +2701,12 @@ export default function PunkHub() {
                 </div>
               ))}
             </div>
+
+            <div className="home-kofi-strip">
+              <p className="home-kofi-text">Insta Punk Mag is 100% independent — no ads, no corporate backing, just punk.</p>
+              <a href="https://ko-fi.com/instapunkmag" target="_blank" rel="noopener noreferrer" className="kofi-btn">☕ SUPPORT US ON KO-FI</a>
+            </div>
+
           </div>
         </>
       )}
@@ -3030,11 +3142,7 @@ export default function PunkHub() {
       {activeSection === "GALLERY" && (
         <div className="section-wrap">
           <h2 className="section-title">Gallery</h2>
-          <p className="section-sub">// AI-GENERATED PUNK IMAGERY · UNIQUE EVERY VISIT //</p>
-
-          <p style={{fontFamily:"'Share Tech Mono', monospace", fontSize:"0.72rem", color:"var(--grey)", marginBottom:"1.5rem", letterSpacing:"0.08em"}}>
-            ⚡ Each image is generated fresh by AI on every page load — no two visits look the same.
-          </p>
+          <p className="section-sub">// PUNK PHOTOGRAPHY · VIDEOS · ICONIC IMAGES //</p>
 
           <div className="gallery-grid">
             {GALLERY_PROMPTS.map((item, i) => (
@@ -3043,6 +3151,7 @@ export default function PunkHub() {
                 prompt={item.prompt}
                 alt={item.alt}
                 span={i === 0 ? 2 : i === 4 ? 2 : null}
+                useAI={false}
               />
             ))}
           </div>
