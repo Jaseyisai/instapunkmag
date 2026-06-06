@@ -1845,6 +1845,19 @@ export default function PunkHub() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const scrollToSectionAndQuiz = (sec, quizId) => {
+    setActiveSection(sec);
+    setMenuOpen(false);
+    setMoreOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      const target = document.getElementById(quizId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 400);
+  };
+
   return (
     <div className="punk-hub">
       <style>{`
@@ -2214,6 +2227,7 @@ export default function PunkHub() {
         }
 
         .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2.5rem; position: relative; z-index: 1; }
+        .hero-quiz-links { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
 
         .cta-btn {
           font-family: 'Share Tech Mono', monospace;
@@ -3262,6 +3276,13 @@ export default function PunkHub() {
             <div className="hero-ctas">
               <button className="cta-btn cta-primary" onClick={() => scrollToSection("ARTICLES")}>READ LATEST ARTICLES</button>
               <button className="cta-btn cta-secondary" onClick={() => scrollToSection("MEET SID")}>MEET SID →</button>
+            </div>
+            <div className="hero-quiz-links">
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("HISTORY", "history-quiz")}>History Quiz</button>
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MUSIC", "music-quiz")}>Music Quiz</button>
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MEDIA", "media-quiz")}>Media Quiz</button>
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("WOMEN IN PUNK", "women-punk-quiz")}>Women in Punk Quiz</button>
+              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("CHRISTIAN PUNK", "christian-punk-quiz")}>Christian Punk Quiz</button>
             </div>
           </section>
 
