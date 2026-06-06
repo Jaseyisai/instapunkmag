@@ -2087,6 +2087,31 @@ export default function PunkHub() {
           display: grid;
           gap: 0.75rem;
         }
+        .section-cta {
+          margin: 1.25rem 0 0;
+        }
+        .quiz-jump-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.8rem 1.2rem;
+          background: var(--red);
+          color: var(--white);
+          border-radius: 999px;
+          border: none;
+          text-decoration: none;
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 0.75rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          transition: background 0.15s, transform 0.15s;
+        }
+        .quiz-jump-button:hover {
+          background: var(--red-hot);
+          transform: translateY(-1px);
+        }
+
         .poll-row {
           display: grid;
           grid-template-columns: auto 1fr auto;
@@ -3329,6 +3354,9 @@ export default function PunkHub() {
         <div className="section-wrap">
           <h2 className="section-title">Punk History</h2>
           <p className="section-sub">// FROM THE GUTTERS OF NEW YORK AND LONDON TO THE WORLD //</p>
+          <div className="section-cta">
+            <a href="#history-quiz" className="quiz-jump-button">Jump to history quiz</a>
+          </div>
 
           <div className="manifesto">
             <p className="manifesto-text">Punk arrived like a brick through a window. Nobody asked for it. Nobody was ready. And that was exactly the point.</p>
@@ -3361,17 +3389,19 @@ export default function PunkHub() {
           </div>
 
           <div className="punk-divider"><span>// QUIZ: WHAT PUNK HISTORIAN ARE YOU? //</span></div>
-          <PunkTypeQuiz
-            title="// WHAT PUNK HISTORIAN ARE YOU? //"
-            intro="Answer four quick questions to discover which chapter of punk history matches your vibe."
-            questions={HISTORY_QUIZ_QUESTIONS}
-            results={HISTORY_QUIZ_RESULTS}
-            storageKey="historyPagePunkQuizPollCounts"
-            initialCounts={HISTORY_INITIAL_POLL_COUNTS}
-            panelLabel="History page favorite"
-            pollHeading="Community history poll snapshot"
-            panelCopy="See which era of punk history readers are most drawn to before you make your choice."
-          />
+          <div id="history-quiz">
+            <PunkTypeQuiz
+              title="// WHAT PUNK HISTORIAN ARE YOU? //"
+              intro="Answer four quick questions to discover which chapter of punk history matches your vibe."
+              questions={HISTORY_QUIZ_QUESTIONS}
+              results={HISTORY_QUIZ_RESULTS}
+              storageKey="historyPagePunkQuizPollCounts"
+              initialCounts={HISTORY_INITIAL_POLL_COUNTS}
+              panelLabel="History page favorite"
+              pollHeading="Community history poll snapshot"
+              panelCopy="See which era of punk history readers are most drawn to before you make your choice."
+            />
+          </div>
         </div>
       )}
 
@@ -3383,6 +3413,9 @@ export default function PunkHub() {
           )}
           <h2 className="section-title">The Music</h2>
           <p className="section-sub">// BANDS THAT STARTED FIRES AND NEVER LOOKED BACK //</p>
+          <div className="section-cta">
+            <a href="#music-quiz" className="quiz-jump-button">Jump to music quiz</a>
+          </div>
 
           <div className="punk-divider"><span>// NEW & NOW — CLICK TO READ FULL FEATURE //</span></div>
           <div className="new-music-grid">
@@ -3412,17 +3445,19 @@ export default function PunkHub() {
           </div>
 
           <div className="punk-divider"><span>// QUIZ: WHAT MUSIC PUNK ARE YOU? //</span></div>
-          <PunkTypeQuiz
-            title="// WHAT MUSIC PUNK ARE YOU? //"
-            intro="Pick the punk music mood that fits your sound and discover which scene you're vibing with."
-            questions={MUSIC_QUIZ_QUESTIONS}
-            results={MUSIC_QUIZ_RESULTS}
-            storageKey="musicPagePunkQuizPollCounts"
-            initialCounts={MUSIC_INITIAL_POLL_COUNTS}
-            panelLabel="Music page favorite"
-            pollHeading="Community music poll snapshot"
-            panelCopy="This poll shows which punk sound the community is digging on the music page right now."
-          />
+          <div id="music-quiz">
+            <PunkTypeQuiz
+              title="// WHAT MUSIC PUNK ARE YOU? //"
+              intro="Pick the punk music mood that fits your sound and discover which scene you're vibing with."
+              questions={MUSIC_QUIZ_QUESTIONS}
+              results={MUSIC_QUIZ_RESULTS}
+              storageKey="musicPagePunkQuizPollCounts"
+              initialCounts={MUSIC_INITIAL_POLL_COUNTS}
+              panelLabel="Music page favorite"
+              pollHeading="Community music poll snapshot"
+              panelCopy="This poll shows which punk sound the community is digging on the music page right now."
+            />
+          </div>
 
           <div className="punk-divider"><span>// ESSENTIAL ALBUMS //</span></div>
 
@@ -3674,18 +3709,24 @@ export default function PunkHub() {
             ))}
           </div>
 
+          <div className="section-cta">
+            <a href="#women-punk-quiz" className="quiz-jump-button">Jump to women in punk quiz</a>
+          </div>
+
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// QUIZ: WHICH WOMEN IN PUNK ARE YOU? //</span></div>
-          <PunkTypeQuiz
-            title="// WHICH WOMEN IN PUNK ARE YOU? //"
-            intro="Answer the questions to discover your punk identity through the lens of women who changed the scene."
-            questions={WOMEN_QUIZ_QUESTIONS}
-            results={WOMEN_QUIZ_RESULTS}
-            storageKey="womenPagePunkQuizPollCounts"
-            initialCounts={WOMEN_INITIAL_POLL_COUNTS}
-            panelLabel="Women in Punk favorite"
-            pollHeading="Community women-in-punk poll"
-            panelCopy="See what kind of women-led punk the community is choosing before you answer."
-          />
+          <div id="women-punk-quiz">
+            <PunkTypeQuiz
+              title="// WHICH WOMEN IN PUNK ARE YOU? //"
+              intro="Answer the questions to discover your punk identity through the lens of women who changed the scene."
+              questions={WOMEN_QUIZ_QUESTIONS}
+              results={WOMEN_QUIZ_RESULTS}
+              storageKey="womenPagePunkQuizPollCounts"
+              initialCounts={WOMEN_INITIAL_POLL_COUNTS}
+              panelLabel="Women in Punk favorite"
+              pollHeading="Community women-in-punk poll"
+              panelCopy="See what kind of women-led punk the community is choosing before you answer."
+            />
+          </div>
 
           {/* Articles */}
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// ARTICLES — CLICK TO READ //</span></div>
@@ -3722,6 +3763,9 @@ export default function PunkHub() {
           )}
           <h2 className="section-title" style={{color: "var(--christian-gold)"}}>Christian Punk</h2>
           <p className="section-sub" style={{color:"#a87fd0"}}>// FAITH · FURY · COMMUNITY · GRACE IN THE PIT //</p>
+          <div className="section-cta">
+            <a href="#christian-punk-quiz" className="quiz-jump-button">Jump to Christian punk quiz</a>
+          </div>
 
           <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// NEW & NOW — CLICK TO READ FULL FEATURE //</span></div>
           <div className="new-music-grid">
@@ -3911,6 +3955,9 @@ export default function PunkHub() {
           )}
           <h2 className="section-title">Books & Films</h2>
           <p className="section-sub">// PUNK CULTURE IN PRINT AND ON SCREEN — CLICK ANY CARD TO READ A FULL FEATURE //</p>
+          <div className="section-cta">
+            <a href="#media-quiz" className="quiz-jump-button">Jump to media quiz</a>
+          </div>
 
           <div className="punk-divider"><span>// ESSENTIAL BOOKS //</span></div>
           <div className="media-grid">
@@ -3943,17 +3990,19 @@ export default function PunkHub() {
           </div>
 
           <div className="punk-divider"><span>// QUIZ: WHAT PUNK MEDIA ARE YOU? //</span></div>
-          <PunkTypeQuiz
-            title="// WHAT PUNK MEDIA ARE YOU? //"
-            intro="Choose your favorite punk media mood and discover whether books, films, documentaries, or zines fit your style."
-            questions={MEDIA_QUIZ_QUESTIONS}
-            results={MEDIA_QUIZ_RESULTS}
-            storageKey="mediaPagePunkQuizPollCounts"
-            initialCounts={MEDIA_INITIAL_POLL_COUNTS}
-            panelLabel="Media page favorite"
-            pollHeading="Community media poll snapshot"
-            panelCopy="Live results from the media page show which format the community prefers right now."
-          />
+          <div id="media-quiz">
+            <PunkTypeQuiz
+              title="// WHAT PUNK MEDIA ARE YOU? //"
+              intro="Choose your favorite punk media mood and discover whether books, films, documentaries, or zines fit your style."
+              questions={MEDIA_QUIZ_QUESTIONS}
+              results={MEDIA_QUIZ_RESULTS}
+              storageKey="mediaPagePunkQuizPollCounts"
+              initialCounts={MEDIA_INITIAL_POLL_COUNTS}
+              panelLabel="Media page favorite"
+              pollHeading="Community media poll snapshot"
+              panelCopy="Live results from the media page show which format the community prefers right now."
+            />
+          </div>
 
           <div className="punk-divider"><span>// SHORT FILMS //</span></div>
           <div className="media-grid">
