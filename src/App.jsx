@@ -1873,29 +1873,30 @@ export default function PunkHub() {
     setMenuOpen(false);
     setMoreOpen(false);
     setPendingQuizScroll(quizId);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
-    if (!pendingQuizScroll) return;
+    if (!pendingQuizScroll || activeSection === "HOME") return;
 
     let attempts = 0;
-    const tryScroll = () => {
-      const target = document.getElementById(pendingQuizScroll);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const attemptScroll = () => {
+      const elem = document.getElementById(pendingQuizScroll);
+      if (elem) {
+        setTimeout(() => {
+          elem.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
         setPendingQuizScroll(null);
         return;
       }
       attempts += 1;
-      if (attempts < 15) {
-        setTimeout(tryScroll, 150);
+      if (attempts < 20) {
+        setTimeout(attemptScroll, 100);
       } else {
         setPendingQuizScroll(null);
       }
     };
 
-    tryScroll();
+    attemptScroll();
   }, [pendingQuizScroll, activeSection]);
 
   return (
