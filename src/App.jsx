@@ -1842,6 +1842,7 @@ export default function PunkHub() {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedWomenTrack, setSelectedWomenTrack] = useState(null);
   const [selectedWomenArticle, setSelectedWomenArticle] = useState(null);
+  const [pendingQuizScroll, setPendingQuizScroll] = useState(null);
 
   const rotationBucket = useMemo(getMonthlyRotationBucket, []);
   const rotatedArticles = useMemo(() => rotateArray(ARTICLES, rotationBucket % ARTICLES.length), [rotationBucket]);
@@ -1871,14 +1872,31 @@ export default function PunkHub() {
     setActiveSection(sec);
     setMenuOpen(false);
     setMoreOpen(false);
+    setPendingQuizScroll(quizId);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(() => {
-      const target = document.getElementById(quizId);
+  };
+
+  useEffect(() => {
+    if (!pendingQuizScroll) return;
+
+    let attempts = 0;
+    const tryScroll = () => {
+      const target = document.getElementById(pendingQuizScroll);
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
+        setPendingQuizScroll(null);
+        return;
       }
-    }, 400);
-  };
+      attempts += 1;
+      if (attempts < 10) {
+        setTimeout(tryScroll, 120);
+      } else {
+        setPendingQuizScroll(null);
+      }
+    };
+
+    tryScroll();
+  }, [pendingQuizScroll]);
 
   return (
     <div className="punk-hub">
