@@ -1842,7 +1842,6 @@ export default function PunkHub() {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedWomenTrack, setSelectedWomenTrack] = useState(null);
   const [selectedWomenArticle, setSelectedWomenArticle] = useState(null);
-  const [pendingQuizScroll, setPendingQuizScroll] = useState(null);
 
   const rotationBucket = useMemo(getMonthlyRotationBucket, []);
   const rotatedArticles = useMemo(() => rotateArray(ARTICLES, rotationBucket % ARTICLES.length), [rotationBucket]);
@@ -1867,28 +1866,6 @@ export default function PunkHub() {
     setMoreOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const scrollToSectionAndQuiz = (sec, quizId) => {
-    setActiveSection(sec);
-    setMenuOpen(false);
-    setMoreOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setPendingQuizScroll(quizId);
-  };
-
-  useEffect(() => {
-    if (!pendingQuizScroll || activeSection === "HOME") return;
-
-    const attemptScroll = () => {
-      const elem = document.getElementById(pendingQuizScroll);
-      if (elem) {
-        elem.scrollIntoView({ behavior: "smooth", block: "start" });
-        setPendingQuizScroll(null);
-      }
-    };
-
-    setTimeout(attemptScroll, 800);
-  }, [pendingQuizScroll, activeSection]);
 
   return (
     <div className="punk-hub">
@@ -3310,11 +3287,12 @@ export default function PunkHub() {
               <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("MEET SID")}>MEET SID →</button>
             </div>
             <div className="hero-quiz-links">
-              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("HISTORY", "history-quiz")}>History Quiz</button>
-              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MUSIC", "music-quiz")}>Music Quiz</button>
-              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MEDIA", "media-quiz")}>Media Quiz</button>
-              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("WOMEN IN PUNK", "women-punk-quiz")}>Women in Punk Quiz</button>
-              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("CHRISTIAN PUNK", "christian-punk-quiz")}>Christian Punk Quiz</button>
+              <a href="#home-quiz" className="cta-btn cta-secondary" style={{textDecoration:"none", display:"inline-block"}}>Home Quiz</a>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("HISTORY")}>History Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("MUSIC")}>Music Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("MEDIA")}>Media Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("WOMEN IN PUNK")}>Women in Punk Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("CHRISTIAN PUNK")}>Christian Punk Quiz</button>
             </div>
           </section>
 
@@ -3364,7 +3342,9 @@ export default function PunkHub() {
               <button className="home-see-all" onClick={() => scrollToSection("ARTICLES")}>SEE ALL ARTICLES →</button>
             </div>
 
-            <PunkTypeQuiz />
+            <div id="home-quiz">
+              <PunkTypeQuiz />
+            </div>
 
             <div className="manifesto">
               <p className="manifesto-text">Punk is not just music. It's a way of thinking. A way of refusing. A way of making something out of nothing and saying it louder than anyone who told you to be quiet.</p>
