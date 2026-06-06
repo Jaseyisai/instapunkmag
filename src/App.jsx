@@ -2,6 +2,23 @@ import { useState, useEffect, useRef } from "react";
 
 const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
 
+const NAV_LABELS = {
+  HOME: "Home",
+  HISTORY: "History",
+  MUSIC: "Music",
+  FASHION: "Fashion",
+  STORES: "Stores",
+  ARTICLES: "Articles",
+  "WOMEN IN PUNK": "Women",
+  "CHRISTIAN PUNK": "Christian",
+  GALLERY: "Gallery",
+  MEDIA: "Media",
+  "MEET SID": "Meet",
+};
+
+const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID"];
+const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY"];
+
 const PUNK_BANDS = [
   { name: "The Clash", era: "1976–1986", origin: "London, UK", genre: "Punk Rock / Post-Punk", desc: "One of the most influential punk bands ever, blending punk with reggae, ska, and rockabilly." },
   { name: "Sex Pistols", era: "1975–1978", origin: "London, UK", genre: "Punk Rock", desc: "Sparked the UK punk explosion. 'Never Mind the Bollocks' remains a defining moment in rock history." },
@@ -1439,6 +1456,7 @@ function StoreFinder() {
 export default function PunkHub() {
   const [activeSection, setActiveSection] = useState("HOME");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [glitching, setGlitching] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedTrack, setSelectedTrack] = useState(null);
@@ -1458,6 +1476,7 @@ export default function PunkHub() {
   const scrollToSection = (sec) => {
     setActiveSection(sec);
     setMenuOpen(false);
+    setMoreOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -1549,6 +1568,34 @@ export default function PunkHub() {
           color: var(--red); font-size: 0.6rem;
         }
 
+        .more-dropdown { position: relative; display: inline-flex; }
+        .more-trigger { display: inline-flex; align-items: center; }
+        .more-list {
+          display: none;
+          position: absolute;
+          top: calc(100% + 0.5rem);
+          right: 0;
+          min-width: 13rem;
+          flex-direction: column;
+          background: rgba(8, 8, 8, 0.98);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0.75rem;
+          box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
+          overflow: hidden;
+          z-index: 50;
+        }
+        .more-dropdown.open .more-list { display: flex; }
+        .more-list .nav-btn {
+          width: 100%;
+          justify-content: flex-start;
+          border-radius: 0;
+          border: none;
+          padding: 0.9rem 1rem;
+          background: transparent;
+        }
+        .more-list .nav-btn:hover,
+        .more-list .nav-btn.active { background: rgba(255, 59, 59, 0.18); }
+
         .hamburger { display: none; background: none; border: 2px solid var(--red); color: var(--red); padding: 0.3rem 0.6rem; font-size: 1.2rem; cursor: pointer; }
 
         @media (max-width: 768px) {
@@ -1556,6 +1603,21 @@ export default function PunkHub() {
           .punk-nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--off-black); border-bottom: 3px solid var(--red); z-index: 200; }
           .hamburger { display: block; }
           .nav-btn { padding: 0.8rem 1.5rem; border-bottom: 1px solid var(--mid); }
+          .more-dropdown { width: 100%; }
+          .more-dropdown.open .more-list {
+            position: static;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            padding: 0;
+          }
+          .more-dropdown.open .more-list .nav-btn {
+            padding-left: 2.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          }
+          .more-dropdown.open .more-list .nav-btn:last-child {
+            border-bottom: none;
+          }
         }
 
         /* === HERO === */
@@ -2607,11 +2669,43 @@ export default function PunkHub() {
           <span className="sub">// INSTA PUNK MAG //</span>
         </div>
         <nav className={`punk-nav ${menuOpen ? "open" : ""}`}>
-          {SECTIONS.map(s => (
-            <button key={s} className={`nav-btn ${activeSection === s ? "active" : ""}`} onClick={() => scrollToSection(s)}>
-              {s}
+          {SECTIONS.filter(s => PRIMARY_SECTIONS.includes(s)).map(s => {
+            const label = NAV_LABELS[s] ?? s;
+            return (
+              <button
+                key={s}
+                className={`nav-btn ${activeSection === s ? "active" : ""}`}
+                onClick={() => scrollToSection(s)}
+                aria-label={s}
+              >
+                {label}
+              </button>
+            );
+          })}
+
+          <div className={`more-dropdown ${moreOpen ? "open" : ""}`}>
+            <button
+              type="button"
+              className={`nav-btn more-trigger ${moreOpen ? "active" : ""}`}
+              onClick={() => setMoreOpen(open => !open)}
+              aria-expanded={moreOpen}
+              aria-label="Open more navigation sections"
+            >
+              More
             </button>
-          ))}
+            <div className="more-list">
+              {SECTIONS.filter(s => MORE_SECTIONS.includes(s)).map(s => (
+                <button
+                  key={s}
+                  className={`nav-btn ${activeSection === s ? "active" : ""}`}
+                  onClick={() => scrollToSection(s)}
+                  aria-label={s}
+                >
+                  {NAV_LABELS[s] ?? s}
+                </button>
+              ))}
+            </div>
+          </div>
         </nav>
         <button className="hamburger" onClick={() => setMenuOpen(o => !o)}>☰</button>
       </header>
