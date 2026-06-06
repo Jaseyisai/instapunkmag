@@ -525,20 +525,21 @@ function GalleryImage({ prompt, alt, span, useAI }) {
   const [error, setError] = useState(false);
   const seed = useRef(Math.floor(Math.random() * 999999));
 
-  // Static Unsplash fallbacks keyed to punk themes
-  const staticMap = {
-    "punk rock concert": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
-    "studded leather": "https://images.unsplash.com/photo-1598387993441-a364f854cde4?w=800&q=80",
-    "electric guitar": "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=800&q=80",
-    "punk rock band": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=80",
-    "punk fashion": "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?w=800&q=80",
-    "vintage vinyl": "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=800&q=80",
-    "punk zine": "https://images.unsplash.com/photo-1501386761578-eaa54b945b46?w=800&q=80",
-    "Dr Martens": "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80",
-  };
+  // Punk culture specific images - concert/music/alternative themed
+  const staticImages = [
+    { src: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Concert crowd moshing" },
+    { src: "https://images.pexels.com/photos/1626481/pexels-photo-1626481.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Punk show energy" },
+    { src: "https://images.pexels.com/photos/1327878/pexels-photo-1327878.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Band performing live" },
+    { src: "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Stage lights and crowd" },
+    { src: "https://images.pexels.com/photos/1477166/pexels-photo-1477166.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Guitarist shredding" },
+    { src: "https://images.pexels.com/photos/1644616/pexels-photo-1644616.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Underground show" },
+    { src: "https://images.pexels.com/photos/995301/pexels-photo-995301.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Guitar detail" },
+    { src: "https://images.pexels.com/photos/761963/pexels-photo-761963.jpeg?auto=compress&cs=tinysrgb&w=800", caption: "Live music atmosphere" },
+  ];
 
-  const staticKey = Object.keys(staticMap).find(k => prompt.toLowerCase().includes(k.toLowerCase()));
-  const staticSrc = staticMap[staticKey] || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80";
+  const imgIndex = GALLERY_PROMPTS.findIndex(g => g.prompt === prompt);
+  const staticEntry = staticImages[imgIndex >= 0 ? imgIndex % staticImages.length : 0];
+  const staticSrc = staticEntry.src;
 
   useEffect(() => {
     if (!useAI) return;
@@ -3142,21 +3143,9 @@ export default function PunkHub() {
       {activeSection === "GALLERY" && (
         <div className="section-wrap">
           <h2 className="section-title">Gallery</h2>
-          <p className="section-sub">// PUNK PHOTOGRAPHY · VIDEOS · ICONIC IMAGES //</p>
+          <p className="section-sub">// ICONIC VIDEOS · PHOTOGRAPHERS · PUNK PHOTO ARCHIVES //</p>
 
-          <div className="gallery-grid">
-            {GALLERY_PROMPTS.map((item, i) => (
-              <GalleryImage
-                key={i}
-                prompt={item.prompt}
-                alt={item.alt}
-                span={i === 0 ? 2 : i === 4 ? 2 : null}
-                useAI={false}
-              />
-            ))}
-          </div>
-
-          <div className="punk-divider"><span>// ICONIC VIDEOS //</span></div>
+          <div className="punk-divider"><span>// ESSENTIAL PUNK VIDEOS //</span></div>
           <div className="video-grid">
             {[
               { title: "The Clash — 'London Calling' (Official HD Video)", url: "https://www.youtube.com/watch?v=a3XqMtam1I0" },
@@ -3169,6 +3158,44 @@ export default function PunkHub() {
               <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
                 <div className="video-embed">
                   <div className="video-play">▶</div>
+                  <div className="video-title">{v.title}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// WOMEN IN PUNK — ESSENTIAL VIDEOS //</span></div>
+          <div className="video-grid">
+            {[
+              { title: "Bikini Kill — 'Rebel Girl' Live", url: "https://www.youtube.com/results?search_query=Bikini+Kill+Rebel+Girl+live" },
+              { title: "Sleater-Kinney — 'Dig Me Out' Live", url: "https://www.youtube.com/results?search_query=Sleater-Kinney+Dig+Me+Out+live" },
+              { title: "Patti Smith — 'Gloria' Live 1976", url: "https://www.youtube.com/results?search_query=Patti+Smith+Gloria+live+1976" },
+              { title: "X-Ray Spex — 'Oh Bondage Up Yours!'", url: "https://www.youtube.com/results?search_query=X-Ray+Spex+Oh+Bondage+Up+Yours" },
+              { title: "Amyl and the Sniffers — Live", url: "https://www.youtube.com/results?search_query=Amyl+and+the+Sniffers+live" },
+              { title: "The Linda Lindas — 'Racist, Sexist Boy'", url: "https://www.youtube.com/results?search_query=Linda+Lindas+Racist+Sexist+Boy" },
+            ].map((v, i) => (
+              <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+                <div className="video-embed" style={{borderColor:"rgba(255,107,157,0.3)"}}>
+                  <div className="video-play" style={{color:"#ff6b9d"}}>▶</div>
+                  <div className="video-title">{v.title}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="punk-divider"><span>// DOCUMENTARIES & LIVE SHOWS //</span></div>
+          <div className="video-grid">
+            {[
+              { title: "The Decline of Western Civilization (1981) — Full Doc", url: "https://www.youtube.com/results?search_query=Decline+of+Western+Civilization+1981+full" },
+              { title: "American Hardcore Documentary — Trailer", url: "https://www.youtube.com/results?search_query=American+Hardcore+documentary" },
+              { title: "Punk Britannia — BBC Documentary", url: "https://www.youtube.com/results?search_query=Punk+Britannia+BBC+documentary" },
+              { title: "The Punk Singer — Kathleen Hanna Documentary", url: "https://www.youtube.com/results?search_query=The+Punk+Singer+documentary+Kathleen+Hanna" },
+              { title: "End of the Century — The Ramones Story", url: "https://www.youtube.com/results?search_query=End+of+the+Century+Ramones+documentary" },
+              { title: "Afropunk Documentary (2003)", url: "https://www.youtube.com/results?search_query=Afropunk+documentary+2003+James+Spooner" },
+            ].map((v, i) => (
+              <a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+                <div className="video-embed" style={{borderColor:"rgba(245,196,0,0.3)"}}>
+                  <div className="video-play" style={{color:"var(--yellow)"}}>▶</div>
                   <div className="video-title">{v.title}</div>
                 </div>
               </a>
