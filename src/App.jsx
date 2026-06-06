@@ -3650,6 +3650,10 @@ export default function PunkHub() {
             <p className="wip-hero-text">From Patti Smith's 1975 howl to Amy Taylor's stage-destroying present, women have always been at the centre of punk — not on its margins. This is their story, their music, their movement. It didn't start with Riot Grrrl and it won't end with whatever comes next.</p>
           </div>
 
+          <div className="section-cta">
+            <a href="#women-punk-quiz" className="quiz-jump-button">Jump to women in punk quiz</a>
+          </div>
+
           {/* Riot Grrrl History */}
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// RIOT GRRRL: THE MOVEMENT //</span></div>
           <div className="wip-manifesto">
@@ -3707,10 +3711,6 @@ export default function PunkHub() {
                 <div className="wip-band-desc">{band.desc}</div>
               </div>
             ))}
-          </div>
-
-          <div className="section-cta">
-            <a href="#women-punk-quiz" className="quiz-jump-button">Jump to women in punk quiz</a>
           </div>
 
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// QUIZ: WHICH WOMEN IN PUNK ARE YOU? //</span></div>
@@ -3785,17 +3785,19 @@ export default function PunkHub() {
           <ChristianShowFinder />
 
           <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// QUIZ: WHAT CHRISTIAN PUNK ARE YOU? //</span></div>
-          <PunkTypeQuiz
-            title="// WHAT CHRISTIAN PUNK ARE YOU? //"
-            intro="Choose the answers that match your faith and punk energy, then see how the community votes."
-            questions={CHRISTIAN_QUIZ_QUESTIONS}
-            results={CHRISTIAN_QUIZ_RESULTS}
-            storageKey="christianPagePunkQuizPollCounts"
-            initialCounts={CHRISTIAN_INITIAL_POLL_COUNTS}
-            panelLabel="Christian page favorite"
-            pollHeading="Community Christian punk snapshot"
-            panelCopy="Live results show which Christian punk vibe readers are connecting with today."
-          />
+          <div id="christian-punk-quiz">
+            <PunkTypeQuiz
+              title="// WHAT CHRISTIAN PUNK ARE YOU? //"
+              intro="Choose the answers that match your faith and punk energy, then see how the community votes."
+              questions={CHRISTIAN_QUIZ_QUESTIONS}
+              results={CHRISTIAN_QUIZ_RESULTS}
+              storageKey="christianPagePunkQuizPollCounts"
+              initialCounts={CHRISTIAN_INITIAL_POLL_COUNTS}
+              panelLabel="Christian page favorite"
+              pollHeading="Community Christian punk snapshot"
+              panelCopy="Live results show which Christian punk vibe readers are connecting with today."
+            />
+          </div>
 
           <div className="christian-section" style={{marginTop:"2rem"}}>
             <p className="christian-intro">
