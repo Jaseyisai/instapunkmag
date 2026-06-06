@@ -1,5 +1,6 @@
 ﻿import { WOMEN_LEGENDS, NEW_WOMEN_PUNK_CARDS, WOMEN_PUNK_ARTICLES } from "../data/content";
-import { WomenShowFinder, WomenMusicGenerator } from "../components/Finders";
+import { WomenShowFinder } from "../components/Finders";
+import { WomenMusicGenerator } from "../components/Readers";
 import PageSection from "../components/PageSection";
 import CardGrid from "../components/CardGrid";
 
