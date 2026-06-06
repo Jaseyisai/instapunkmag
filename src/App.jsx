@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import PunkTypeQuiz from "./components/PunkTypeQuiz.jsx";
 
 const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
@@ -18,6 +18,19 @@ const NAV_LABELS = {
 };
 
 const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID"];
+
+const rotateArray = (arr, index) => {
+  if (!Array.isArray(arr) || arr.length === 0) return arr;
+  const mod = ((index % arr.length) + arr.length) % arr.length;
+  return [...arr.slice(mod), ...arr.slice(0, mod)];
+};
+
+const getMonthlyRotationBucket = () => {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth();
+  return month * 2 + (day >= 23 ? 1 : 0);
+};
 const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY"];
 
 const PUNK_QUIZ_QUESTIONS = [
@@ -1830,6 +1843,15 @@ export default function PunkHub() {
   const [selectedWomenTrack, setSelectedWomenTrack] = useState(null);
   const [selectedWomenArticle, setSelectedWomenArticle] = useState(null);
 
+  const rotationBucket = useMemo(getMonthlyRotationBucket, []);
+  const rotatedArticles = useMemo(() => rotateArray(ARTICLES, rotationBucket % ARTICLES.length), [rotationBucket]);
+  const rotatedMusicCards = useMemo(() => rotateArray(NEW_MUSIC_CARDS, rotationBucket % NEW_MUSIC_CARDS.length), [rotationBucket]);
+  const rotatedWomenArticles = useMemo(() => rotateArray(WOMEN_PUNK_ARTICLES, rotationBucket % WOMEN_PUNK_ARTICLES.length), [rotationBucket]);
+  const rotatedBooks = useMemo(() => rotateArray(PUNK_BOOKS, rotationBucket % PUNK_BOOKS.length), [rotationBucket]);
+  const rotatedFilms = useMemo(() => rotateArray(PUNK_FILMS, rotationBucket % PUNK_FILMS.length), [rotationBucket]);
+  const rotatedShortFilms = useMemo(() => rotateArray(PUNK_SHORT_FILMS, rotationBucket % PUNK_SHORT_FILMS.length), [rotationBucket]);
+  const rotatedDocumentaries = useMemo(() => rotateArray(PUNK_DOCUMENTARIES, rotationBucket % PUNK_DOCUMENTARIES.length), [rotationBucket]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setGlitching(true);
@@ -3319,7 +3341,7 @@ export default function PunkHub() {
 
             <div className="punk-divider"><span>// THIS MONTH'S ARTICLES //</span></div>
             <div className="home-articles-preview">
-              {ARTICLES.slice(0, 3).map((a, i) => (
+              {rotatedArticles.slice(0, 3).map((a, i) => (
                 <div key={i} className="home-article-chip" onClick={() => { scrollToSection("ARTICLES"); setSelectedArticle(a); }}>
                   <span className="home-chip-emoji">{a.emoji}</span>
                   <div>
@@ -3440,7 +3462,7 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span>// NEW & NOW — CLICK TO READ FULL FEATURE //</span></div>
           <div className="new-music-grid">
-            {NEW_MUSIC_CARDS.map((track, i) => (
+            {rotatedMusicCards.map((track, i) => (
               <div key={i} className="new-music-card" onClick={() => setSelectedTrack(track)}>
                 <span className="new-music-emoji">{track.emoji}</span>
                 <div className="new-music-genre">{track.genre}</div>
@@ -3622,7 +3644,7 @@ export default function PunkHub() {
           <p className="section-sub">// CULTURE · HISTORY · DIY · POLITICS · COMMUNITY //</p>
 
           <div className="article-grid">
-            {ARTICLES.map((a, i) => (
+            {rotatedArticles.map((a, i) => (
               <div key={i} className="article-card" onClick={() => setSelectedArticle(a)} style={{cursor:"pointer"}}>
                 <span className="article-emoji">{a.emoji}</span>
                 <div className="article-category">{a.category}</div>
@@ -3752,7 +3774,7 @@ export default function PunkHub() {
           {/* Articles */}
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// ARTICLES — CLICK TO READ //</span></div>
           <div className="wip-article-grid">
-            {WOMEN_PUNK_ARTICLES.map((a, i) => (
+            {rotatedWomenArticles.map((a, i) => (
               <div key={i} className="wip-article-card"
                 onClick={() => setSelectedWomenArticle({ ...a, readTime: a.readTime })}>
                 <span className="wip-article-emoji">{a.emoji}</span>
@@ -3984,7 +4006,7 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span>// ESSENTIAL BOOKS //</span></div>
           <div className="media-grid">
-            {PUNK_BOOKS.map((item, i) => (
+            {rotatedBooks.map((item, i) => (
               <div key={i} className="media-card" style={{borderTopColor:"var(--white)"}}
                 onClick={() => setSelectedMedia({...item, mediaType:"book"})}>
                 <span className="media-card-emoji">{item.emoji}</span>
@@ -3999,7 +4021,7 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span>// ESSENTIAL FILMS //</span></div>
           <div className="media-grid">
-            {PUNK_FILMS.map((item, i) => (
+            {rotatedFilms.map((item, i) => (
               <div key={i} className="media-card" style={{borderTopColor:"var(--red)"}}
                 onClick={() => setSelectedMedia({...item, mediaType:"film"})}>
                 <span className="media-card-emoji">{item.emoji}</span>
@@ -4029,7 +4051,7 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span>// SHORT FILMS //</span></div>
           <div className="media-grid">
-            {PUNK_SHORT_FILMS.map((item, i) => (
+            {rotatedShortFilms.map((item, i) => (
               <div key={i} className="media-card" style={{borderTopColor:"var(--grey)"}}
                 onClick={() => setSelectedMedia({...item, mediaType:"short film"})}>
                 <span className="media-card-emoji">{item.emoji}</span>
@@ -4044,7 +4066,7 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span>// DOCUMENTARIES //</span></div>
           <div className="media-grid">
-            {PUNK_DOCUMENTARIES.map((item, i) => (
+            {rotatedDocumentaries.map((item, i) => (
               <div key={i} className="media-card" style={{borderTopColor:"var(--yellow)"}}
                 onClick={() => setSelectedMedia({...item, mediaType:"documentary"})}>
                 <span className="media-card-emoji">{item.emoji}</span>
