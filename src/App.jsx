@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import PunkTypeQuiz from "./components/PunkTypeQuiz.jsx";
 
 const SECTIONS = ["HOME", "HISTORY", "MUSIC", "FASHION", "STORES", "ARTICLES", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY", "MEDIA", "MEET SID"];
 
@@ -18,6 +19,370 @@ const NAV_LABELS = {
 
 const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID"];
 const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY"];
+
+const PUNK_QUIZ_QUESTIONS = [
+  {
+    question: "What kind of show are you most likely to attend?",
+    options: [
+      { label: "A political punk rally with chants and DIY zines", type: "anarcho" },
+      { label: "A classic basement set with raw melodies", type: "classic" },
+      { label: "A riot grrrl all-female bill with handmade merch", type: "riot" },
+      { label: "A hardcore slam-dance pit with sweat and speed", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What would you write on the back of your jacket?",
+    options: [
+      { label: "Smash the system", type: "anarcho" },
+      { label: "Loud, proud, no regrets", type: "classic" },
+      { label: "Girls to the front", type: "riot" },
+      { label: "Break the set, leave everything", type: "hardcore" },
+    ],
+  },
+  {
+    question: "Which DIY project sounds the most like you?",
+    options: [
+      { label: "Printing zines and dropping flyers", type: "anarcho" },
+      { label: "Distressing a vintage band tee", type: "classic" },
+      { label: "Sewing patches and safety pin art", type: "riot" },
+      { label: "Spiking boots and customizing gear", type: "hardcore" },
+    ],
+  },
+  {
+    question: "How do you describe your energy?",
+    options: [
+      { label: "Angry, idealistic, and disruptive", type: "anarcho" },
+      { label: "Rebellious with a sense of heritage", type: "classic" },
+      { label: "Fierce, empathetic, and loud", type: "riot" },
+      { label: "Fast, heavy, and unfiltered", type: "hardcore" },
+    ],
+  },
+];
+
+const MUSIC_QUIZ_QUESTIONS = [
+  {
+    question: "What kind of punk show do you want to be at?",
+    options: [
+      { label: "A politically charged chant-along", type: "anarcho" },
+      { label: "A rowdy classic club night", type: "classic" },
+      { label: "A loud Riot Grrrl all-female bill", type: "riot" },
+      { label: "A fast hardcore pit full of sweat", type: "hardcore" },
+    ],
+  },
+  {
+    question: "Your ideal punk anthem says:",
+    options: [
+      { label: "Smash the system and start a movement", type: "anarcho" },
+      { label: "Loud, proud, and fully uncensored", type: "classic" },
+      { label: "Girls to the front — we own this stage", type: "riot" },
+      { label: "Faster, heavier, and no apologies", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What feels most like a punk record to you?",
+    options: [
+      { label: "Political lyrics with jagged guitars", type: "anarcho" },
+      { label: "A simple, unforgettable chant", type: "classic" },
+      { label: "A fierce feminist rally cry", type: "riot" },
+      { label: "An adrenaline rush in under two minutes", type: "hardcore" },
+    ],
+  },
+  {
+    question: "Which band name would you spray-paint on a wall?",
+    options: [
+      { label: "Crass or Fugazi", type: "anarcho" },
+      { label: "The Ramones or The Clash", type: "classic" },
+      { label: "Bikini Kill or Sleater-Kinney", type: "riot" },
+      { label: "Black Flag or Minor Threat", type: "hardcore" },
+    ],
+  },
+];
+
+const MUSIC_QUIZ_RESULTS = {
+  anarcho: {
+    title: "Anarcho Punk",
+    description: "You lean toward protest, politics, and DIY rebellion. Your music is a call to action, not a trend.",
+  },
+  classic: {
+    title: "Classic Punk",
+    description: "You dig the original sound of the scene: raw, catchy, and full of attitude. You’re loyal to punk's first real fire.",
+  },
+  riot: {
+    title: "Riot Grrrl",
+    description: "You want punk that’s fierce, feminist, and community-driven. Your music is loud, proud, and built for the front line.",
+  },
+  hardcore: {
+    title: "Hardcore Punk",
+    description: "You crave speed, intensity, and a pit that leaves you breathless. Your punk is about energy that hits like a freight train.",
+  },
+};
+
+const MUSIC_INITIAL_POLL_COUNTS = {
+  anarcho: 19,
+  classic: 24,
+  riot: 14,
+  hardcore: 18,
+};
+
+const MEDIA_QUIZ_QUESTIONS = [
+  {
+    question: "What kind of punk narrative are you most likely to binge?",
+    options: [
+      { label: "A gritty music documentary", type: "documentary" },
+      { label: "A punk autobiography", type: "book" },
+      { label: "A raw zine piece", type: "zine" },
+      { label: "A film that lives in the pit", type: "film" },
+    ],
+  },
+  {
+    question: "What line would make you pause and rewind?",
+    options: [
+      { label: "The system is broken and we built our own", type: "documentary" },
+      { label: "I never played the game, I burned the table", type: "book" },
+      { label: "This is our story, not theirs", type: "zine" },
+      { label: "One more song, one more fight", type: "film" },
+    ],
+  },
+  {
+    question: "What mood are you in for punk media?",
+    options: [
+      { label: "A real-life scene deep dive", type: "documentary" },
+      { label: "A memoir with spray paint on every page", type: "book" },
+      { label: "A handmade, angry xerox zine", type: "zine" },
+      { label: "A loud and cinematic live set", type: "film" },
+    ],
+  },
+  {
+    question: "What do you want to learn next?",
+    options: [
+      { label: "How punk changed culture", type: "documentary" },
+      { label: "What it felt like to be there", type: "book" },
+      { label: "How to make something yourself", type: "zine" },
+      { label: "What happens on stage after the first chord", type: "film" },
+    ],
+  },
+];
+
+const MEDIA_QUIZ_RESULTS = {
+  documentary: {
+    title: "Punk Documentarian",
+    description: "You love the real stories behind the music. You want the truth, the chaos, and the people who lived it.",
+  },
+  book: {
+    title: "Punk Bookworm",
+    description: "You crave punk history and first-person stories. You read to understand the movement's heart and why it still matters.",
+  },
+  zine: {
+    title: "DIY Zine Collector",
+    description: "You live for handmade, raw, urgent expression. You trust the underground press more than mainstream narratives.",
+  },
+  film: {
+    title: "Punk Film Fan",
+    description: "You want the spectacle, the sound, and the look. Films are how you feel the scene and relive its intensity.",
+  },
+};
+
+const MEDIA_INITIAL_POLL_COUNTS = {
+  documentary: 20,
+  book: 22,
+  zine: 16,
+  film: 24,
+};
+
+const HISTORY_QUIZ_QUESTIONS = [
+  {
+    question: "Which era of punk history pulls you in the most?",
+    options: [
+      { label: "The radical protest of the '70s UK scene", type: "anarcho" },
+      { label: "The early New York basement crunch", type: "classic" },
+      { label: "The feminist Riot Grrrl revolution", type: "riot" },
+      { label: "The DIY hardcore explosion of the '80s", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What kind of punk artifact would you keep forever?",
+    options: [
+      { label: "A protest zine with a handwritten manifesto", type: "anarcho" },
+      { label: "A first-press single from The Clash or The Ramones", type: "classic" },
+      { label: "A Riot Grrrl flyer stapled with safety pins", type: "riot" },
+      { label: "A hardcore show wristband ripped from a sold-out pit", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What story do you want to hear from punk's past?",
+    options: [
+      { label: "How punk smashed institutions and built its own networks", type: "anarcho" },
+      { label: "The first time a band played louder than the audience", type: "classic" },
+      { label: "When women refused to be pushed to the back", type: "riot" },
+      { label: "How the scene got faster, tougher, and more urgent", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What makes punk history feel alive to you?",
+    options: [
+      { label: "The politics behind the music", type: "anarcho" },
+      { label: "The sound that changed everything", type: "classic" },
+      { label: "The voices that challenged gender norms", type: "riot" },
+      { label: "The energy of the underground mosh pit", type: "hardcore" },
+    ],
+  },
+];
+
+const HISTORY_QUIZ_RESULTS = {
+  anarcho: {
+    title: "Punk Historian",
+    description: "You connect punk to protest and politics. You see the music as a tool for change, not just a sound.",
+  },
+  classic: {
+    title: "Classic Archivist",
+    description: "You are drawn to punk's first wave and its raw power. You honor the pioneers and the records that started it all.",
+  },
+  riot: {
+    title: "Riot Grrrl Scholar",
+    description: "You value punk that centers women, community, and rebellion. Your history is told through voices that refused to stay silent.",
+  },
+  hardcore: {
+    title: "Hardcore Historian",
+    description: "You live for punk's fastest, fiercest chapter. You appreciate how the scene became louder, tighter, and more confrontational.",
+  },
+};
+
+const HISTORY_INITIAL_POLL_COUNTS = {
+  anarcho: 18,
+  classic: 27,
+  riot: 22,
+  hardcore: 21,
+};
+
+const WOMEN_QUIZ_QUESTIONS = [
+  {
+    question: "What part of punk's women-led story inspires you most?",
+    options: [
+      { label: "The Riot Grrrl manifesto and its fury", type: "riot" },
+      { label: "The early women who defined the sound", type: "classic" },
+      { label: "The DIY zines and underground networks", type: "anarcho" },
+      { label: "The hard-hitting energy of women in hardcore", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What slogan would you spray-paint on a women's punk flyer?",
+    options: [
+      { label: "Girls to the front", type: "riot" },
+      { label: "Respect the original rebellion", type: "classic" },
+      { label: "Create your own scene", type: "anarcho" },
+      { label: "Break the rules and start the pit", type: "hardcore" },
+    ],
+  },
+  {
+    question: "How do you want to show up in punk?",
+    options: [
+      { label: "As a community builder and organizer", type: "anarcho" },
+      { label: "As someone who honors the culture's roots", type: "classic" },
+      { label: "As a fierce vocal leader on stage", type: "riot" },
+      { label: "As a raw force that demands attention", type: "hardcore" },
+    ],
+  },
+  {
+    question: "Pick your ideal women-in-punk moment:",
+    options: [
+      { label: "A zine table overflowing with hand-copied manifestos", type: "anarcho" },
+      { label: "A legendary all-female set at CBGB", type: "classic" },
+      { label: "A Riot Grrrl group hug after a show", type: "riot" },
+      { label: "A sweat-soaked hardcore basement show that shatters expectations", type: "hardcore" },
+    ],
+  },
+];
+
+const WOMEN_QUIZ_RESULTS = {
+  anarcho: {
+    title: "DIY Feminist",
+    description: "You believe women build scenes from the ground up. Your punk is handmade, fierce, and community-first.",
+  },
+  classic: {
+    title: "Legendary Frontwoman",
+    description: "You honor the women who shaped punk's first wave. Your aesthetic is classic, loud, and unforgettable.",
+  },
+  riot: {
+    title: "Riot Grrrl Rebel",
+    description: "You are loud, politically sharp, and unafraid to challenge the status quo. For you, punk is a feminist act.",
+  },
+  hardcore: {
+    title: "Hardcore Sister",
+    description: "You bring intensity and conviction to every show. Your punk is fearless, fast, and impossible to ignore.",
+  },
+};
+
+const WOMEN_INITIAL_POLL_COUNTS = {
+  anarcho: 20,
+  classic: 16,
+  riot: 28,
+  hardcore: 18,
+};
+
+const CHRISTIAN_QUIZ_QUESTIONS = [
+  {
+    question: "What kind of Christian punk energy do you bring?",
+    options: [
+      { label: "A prophetic, community-minded protest", type: "anarcho" },
+      { label: "A classic faith-driven anthem", type: "classic" },
+      { label: "A radical, hopeful riot cry", type: "riot" },
+      { label: "A heavy, raw hardcore testimony", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What is the loudest part of your faith?",
+    options: [
+      { label: "Justice for the oppressed", type: "anarcho" },
+      { label: "Belief wrapped in tradition and truth", type: "classic" },
+      { label: "Love, rage, and sisterhood united", type: "riot" },
+      { label: "Strength found in the center of the pit", type: "hardcore" },
+    ],
+  },
+  {
+    question: "What phrase belongs on your Christian punk patch?",
+    options: [
+      { label: "Faith without compromise", type: "anarcho" },
+      { label: "Born again, still loud", type: "classic" },
+      { label: "Grace is radical", type: "riot" },
+      { label: "Break walls, build altars", type: "hardcore" },
+    ],
+  },
+  {
+    question: "How do you want your message to land?",
+    options: [
+      { label: "A prophetic call to action", type: "anarcho" },
+      { label: "A melodic exclamation of hope", type: "classic" },
+      { label: "A bold statement of inclusion", type: "riot" },
+      { label: "A powerful, uncompromising challenge", type: "hardcore" },
+    ],
+  },
+];
+
+const CHRISTIAN_QUIZ_RESULTS = {
+  anarcho: {
+    title: "Prophetic Punk",
+    description: "Your faith is forceful and justice-oriented. You see punk as a way to speak truth to power with love and fury.",
+  },
+  classic: {
+    title: "Faithful Punk",
+    description: "Your punk is grounded in tradition and sincerity. You believe enduring melody and message are both essential.",
+  },
+  riot: {
+    title: "Riot Gospel",
+    description: "You blend punk energy with radical compassion. Your message is loud, inclusive, and unapologetically hopeful.",
+  },
+  hardcore: {
+    title: "Hardcore Believer",
+    description: "Your faith is intense and raw. You embrace the pit as a place to confess, challenge, and release.",
+  },
+};
+
+const CHRISTIAN_INITIAL_POLL_COUNTS = {
+  anarcho: 15,
+  classic: 18,
+  riot: 20,
+  hardcore: 22,
+};
 
 const PUNK_BANDS = [
   { name: "The Clash", era: "1976–1986", origin: "London, UK", genre: "Punk Rock / Post-Punk", desc: "One of the most influential punk bands ever, blending punk with reggae, ska, and rockabilly." },
@@ -1596,6 +1961,151 @@ export default function PunkHub() {
         .more-list .nav-btn:hover,
         .more-list .nav-btn.active { background: rgba(255, 59, 59, 0.18); }
 
+        .quiz-card {
+          background: rgba(20, 20, 20, 0.96);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 1rem;
+          padding: 1.5rem;
+          margin: 2rem 0;
+          max-width: 100%;
+        }
+        .quiz-headline {
+          font-family: 'Share Tech Mono', monospace;
+          color: var(--red);
+          letter-spacing: 0.25em;
+          font-size: 0.75rem;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+        }
+        .quiz-copy {
+          color: rgba(255, 255, 255, 0.82);
+          margin-bottom: 1.25rem;
+          line-height: 1.6;
+        }
+        .quiz-question {
+          margin-bottom: 1rem;
+        }
+        .quiz-question-title {
+          font-size: 0.95rem;
+          margin-bottom: 0.75rem;
+          color: #f5f5f5;
+        }
+        .quiz-options {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.75rem;
+        }
+        .quiz-option {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: rgba(255, 255, 255, 0.92);
+          border-radius: 0.75rem;
+          padding: 0.95rem 1rem;
+          text-align: left;
+          cursor: pointer;
+          transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+        }
+        .quiz-option:hover {
+          transform: translateY(-1px);
+          background: rgba(255, 255, 255, 0.08);
+        }
+        .quiz-option.active {
+          background: rgba(204, 0, 0, 0.2);
+          border-color: var(--red);
+        }
+        .quiz-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 1.25rem;
+        }
+        .quiz-submit,
+        .quiz-reset {
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.05);
+          color: var(--white);
+          padding: 0.9rem 1.25rem;
+          border-radius: 0.75rem;
+          cursor: pointer;
+          transition: background 0.18s ease, border-color 0.18s ease;
+        }
+        .quiz-submit:hover,
+        .quiz-reset:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.22);
+        }
+        .quiz-submit:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+        }
+        .quiz-result {
+          margin-top: 1.75rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .quiz-result-title {
+          font-size: 1.05rem;
+          margin-bottom: 0.65rem;
+          color: #ffffff;
+        }
+        .quiz-poll-title {
+          margin-top: 1rem;
+          font-size: 0.85rem;
+          letter-spacing: 0.1em;
+          color: var(--red);
+          text-transform: uppercase;
+          margin-bottom: 0.75rem;
+        }
+        .quiz-panel {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 1rem;
+          padding: 1rem 1.15rem;
+          margin: 1.5rem 0;
+          display: grid;
+          gap: 0.55rem;
+        }
+        .quiz-panel-label {
+          color: var(--red);
+          font-size: 0.75rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+        .quiz-panel-value {
+          font-size: 1.5rem;
+          color: #fff;
+          font-weight: 700;
+        }
+        .quiz-panel-copy {
+          color: rgba(255, 255, 255, 0.72);
+          line-height: 1.55;
+        }
+        .quiz-poll-summary {
+          margin-bottom: 1.5rem;
+        }
+        .quiz-poll {
+          display: grid;
+          gap: 0.75rem;
+        }
+        .poll-row {
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          gap: 0.75rem;
+          align-items: center;
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.85);
+        }
+        .poll-bar {
+          background: rgba(255, 255, 255, 0.08);
+          border-radius: 999px;
+          height: 0.8rem;
+          overflow: hidden;
+        }
+        .poll-fill {
+          background: var(--red);
+          height: 100%;
+        }
+
         .hamburger { display: none; background: none; border: 2px solid var(--red); color: var(--red); padding: 0.3rem 0.6rem; font-size: 1.2rem; cursor: pointer; }
 
         @media (max-width: 768px) {
@@ -1617,6 +2127,12 @@ export default function PunkHub() {
           }
           .more-dropdown.open .more-list .nav-btn:last-child {
             border-bottom: none;
+          }
+          .quiz-options {
+            grid-template-columns: 1fr;
+          }
+          .quiz-option {
+            width: 100%;
           }
         }
 
@@ -2770,6 +3286,8 @@ export default function PunkHub() {
               <button className="home-see-all" onClick={() => scrollToSection("ARTICLES")}>SEE ALL ARTICLES →</button>
             </div>
 
+            <PunkTypeQuiz />
+
             <div className="manifesto">
               <p className="manifesto-text">Punk is not just music. It's a way of thinking. A way of refusing. A way of making something out of nothing and saying it louder than anyone who told you to be quiet.</p>
               <p className="manifesto-attr">— INSTA PUNK MAG MANIFESTO</p>
@@ -2841,6 +3359,19 @@ export default function PunkHub() {
               </div>
             ))}
           </div>
+
+          <div className="punk-divider"><span>// QUIZ: WHAT PUNK HISTORIAN ARE YOU? //</span></div>
+          <PunkTypeQuiz
+            title="// WHAT PUNK HISTORIAN ARE YOU? //"
+            intro="Answer four quick questions to discover which chapter of punk history matches your vibe."
+            questions={HISTORY_QUIZ_QUESTIONS}
+            results={HISTORY_QUIZ_RESULTS}
+            storageKey="historyPagePunkQuizPollCounts"
+            initialCounts={HISTORY_INITIAL_POLL_COUNTS}
+            panelLabel="History page favorite"
+            pollHeading="Community history poll snapshot"
+            panelCopy="See which era of punk history readers are most drawn to before you make your choice."
+          />
         </div>
       )}
 
@@ -2879,6 +3410,19 @@ export default function PunkHub() {
               </div>
             ))}
           </div>
+
+          <div className="punk-divider"><span>// QUIZ: WHAT MUSIC PUNK ARE YOU? //</span></div>
+          <PunkTypeQuiz
+            title="// WHAT MUSIC PUNK ARE YOU? //"
+            intro="Pick the punk music mood that fits your sound and discover which scene you're vibing with."
+            questions={MUSIC_QUIZ_QUESTIONS}
+            results={MUSIC_QUIZ_RESULTS}
+            storageKey="musicPagePunkQuizPollCounts"
+            initialCounts={MUSIC_INITIAL_POLL_COUNTS}
+            panelLabel="Music page favorite"
+            pollHeading="Community music poll snapshot"
+            panelCopy="This poll shows which punk sound the community is digging on the music page right now."
+          />
 
           <div className="punk-divider"><span>// ESSENTIAL ALBUMS //</span></div>
 
@@ -3130,6 +3674,19 @@ export default function PunkHub() {
             ))}
           </div>
 
+          <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// QUIZ: WHICH WOMEN IN PUNK ARE YOU? //</span></div>
+          <PunkTypeQuiz
+            title="// WHICH WOMEN IN PUNK ARE YOU? //"
+            intro="Answer the questions to discover your punk identity through the lens of women who changed the scene."
+            questions={WOMEN_QUIZ_QUESTIONS}
+            results={WOMEN_QUIZ_RESULTS}
+            storageKey="womenPagePunkQuizPollCounts"
+            initialCounts={WOMEN_INITIAL_POLL_COUNTS}
+            panelLabel="Women in Punk favorite"
+            pollHeading="Community women-in-punk poll"
+            panelCopy="See what kind of women-led punk the community is choosing before you answer."
+          />
+
           {/* Articles */}
           <div className="punk-divider"><span style={{color:"#ff6b9d"}}>// ARTICLES — CLICK TO READ //</span></div>
           <div className="wip-article-grid">
@@ -3182,6 +3739,19 @@ export default function PunkHub() {
 
           <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// FIND CHRISTIAN PUNK SHOWS NEAR YOU //</span></div>
           <ChristianShowFinder />
+
+          <div className="punk-divider"><span style={{color:"var(--christian-gold)"}}>// QUIZ: WHAT CHRISTIAN PUNK ARE YOU? //</span></div>
+          <PunkTypeQuiz
+            title="// WHAT CHRISTIAN PUNK ARE YOU? //"
+            intro="Choose the answers that match your faith and punk energy, then see how the community votes."
+            questions={CHRISTIAN_QUIZ_QUESTIONS}
+            results={CHRISTIAN_QUIZ_RESULTS}
+            storageKey="christianPagePunkQuizPollCounts"
+            initialCounts={CHRISTIAN_INITIAL_POLL_COUNTS}
+            panelLabel="Christian page favorite"
+            pollHeading="Community Christian punk snapshot"
+            panelCopy="Live results show which Christian punk vibe readers are connecting with today."
+          />
 
           <div className="christian-section" style={{marginTop:"2rem"}}>
             <p className="christian-intro">
@@ -3371,6 +3941,19 @@ export default function PunkHub() {
               </div>
             ))}
           </div>
+
+          <div className="punk-divider"><span>// QUIZ: WHAT PUNK MEDIA ARE YOU? //</span></div>
+          <PunkTypeQuiz
+            title="// WHAT PUNK MEDIA ARE YOU? //"
+            intro="Choose your favorite punk media mood and discover whether books, films, documentaries, or zines fit your style."
+            questions={MEDIA_QUIZ_QUESTIONS}
+            results={MEDIA_QUIZ_RESULTS}
+            storageKey="mediaPagePunkQuizPollCounts"
+            initialCounts={MEDIA_INITIAL_POLL_COUNTS}
+            panelLabel="Media page favorite"
+            pollHeading="Community media poll snapshot"
+            panelCopy="Live results from the media page show which format the community prefers right now."
+          />
 
           <div className="punk-divider"><span>// SHORT FILMS //</span></div>
           <div className="media-grid">
