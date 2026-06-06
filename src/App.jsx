@@ -1888,15 +1888,15 @@ export default function PunkHub() {
         return;
       }
       attempts += 1;
-      if (attempts < 10) {
-        setTimeout(tryScroll, 120);
+      if (attempts < 15) {
+        setTimeout(tryScroll, 150);
       } else {
         setPendingQuizScroll(null);
       }
     };
 
     tryScroll();
-  }, [pendingQuizScroll]);
+  }, [pendingQuizScroll, activeSection]);
 
   return (
     <div className="punk-hub">
@@ -3314,15 +3314,15 @@ export default function PunkHub() {
             <h1 className="hero-title">One Sound.<br /><em>No Rules.</em><br />All Culture.</h1>
             <p className="hero-sub">// THE COMPLETE PUNK CULTURE HUB //</p>
             <div className="hero-ctas">
-              <button className="cta-btn cta-primary" onClick={() => scrollToSection("ARTICLES")}>READ LATEST ARTICLES</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSection("MEET SID")}>MEET SID →</button>
+              <button type="button" className="cta-btn cta-primary" onClick={() => scrollToSection("ARTICLES")}>READ LATEST ARTICLES</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSection("MEET SID")}>MEET SID →</button>
             </div>
             <div className="hero-quiz-links">
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("HISTORY", "history-quiz")}>History Quiz</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MUSIC", "music-quiz")}>Music Quiz</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MEDIA", "media-quiz")}>Media Quiz</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("WOMEN IN PUNK", "women-punk-quiz")}>Women in Punk Quiz</button>
-              <button className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("CHRISTIAN PUNK", "christian-punk-quiz")}>Christian Punk Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("HISTORY", "history-quiz")}>History Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MUSIC", "music-quiz")}>Music Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("MEDIA", "media-quiz")}>Media Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("WOMEN IN PUNK", "women-punk-quiz")}>Women in Punk Quiz</button>
+              <button type="button" className="cta-btn cta-secondary" onClick={() => scrollToSectionAndQuiz("CHRISTIAN PUNK", "christian-punk-quiz")}>Christian Punk Quiz</button>
             </div>
           </section>
 
