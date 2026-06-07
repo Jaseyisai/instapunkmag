@@ -26,6 +26,7 @@ const NAV_LABELS = {
   GALLERY: "Gallery",
   MEDIA: "Media",
   "MEET SID": "Meet",
+  "MUSIC QUIZ": "Music Quiz",
 };
 
 const PAGE_COMPONENTS = {
@@ -40,9 +41,10 @@ const PAGE_COMPONENTS = {
   GALLERY: GalleryPage,
   MEDIA: MediaPage,
   "MEET SID": MeetSidPage,
+  "MUSIC QUIZ": MusicPage,
 };
 
-const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID"];
+const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID", "MUSIC QUIZ"];
 const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY"];
 
 function normalizeRoute(section) {
