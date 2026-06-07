@@ -17,7 +17,7 @@ import "./App.css";
 const NAV_LABELS = {
   HOME: "Home",
   HISTORY: "History",
-  //MUSIC: "Music",
+  MUSIC: "Music",
   FASHION: "Fashion",
   STORES: "Stores",
   ARTICLES: "Articles",
