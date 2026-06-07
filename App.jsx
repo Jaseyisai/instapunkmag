@@ -45,7 +45,7 @@ const PAGE_COMPONENTS = {
 };
 
 const PRIMARY_SECTIONS = ["HOME", "MUSIC", "FASHION", "STORES", "ARTICLES", "MEDIA", "MEET SID", "MUSIC QUIZ"];
-const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY"];
+const MORE_SECTIONS = ["HISTORY", "WOMEN IN PUNK", "CHRISTIAN PUNK", "GALLERY", "MUSIC QUIZ"];
 
 function normalizeRoute(section) {
   if (section === "HOME") return "/";
