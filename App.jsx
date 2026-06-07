@@ -3,7 +3,7 @@ import { NavLink, Routes, Route } from "react-router-dom";
 import { SECTIONS } from "./data/content";
 import HomePage from "./pages/HomePage";
 import HistoryPage from "./pages/HistoryPage";
-//import MusicPage from "./pages/MusicPage";
+import MusicPage from "./pages/MusicPage";
 import FashionPage from "./pages/FashionPage";
 import StoresPage from "./pages/StoresPage";
 import ArticlesPage from "./pages/ArticlesPage";
